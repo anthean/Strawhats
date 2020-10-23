@@ -1,5 +1,6 @@
 import pygame
 
+#test
 class StrawhatsGame:
     def __init__(self):
         self.running = False

@@ -1,6 +1,6 @@
 # Strawhats
 
-#Project Description
+## Project Description
 For our project, our team will build a single player 2d platform survival game based around the Covid-19 pandemic. 
 Our game will revolve around a player controlled character, who wields a hand sanitizer gun to attack Covid-19 infected 
 zombies while wearing a mask as armor. Our game will be survival based, with the player controlled character’s health 

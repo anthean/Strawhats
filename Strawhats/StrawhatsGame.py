@@ -23,5 +23,6 @@ class StrawhatsGame:
             
             
 if __name__ == '__main__':
+    print("alex was here")
     covidBlaster = StrawhatsGame()
     covidBlaster.run_game()

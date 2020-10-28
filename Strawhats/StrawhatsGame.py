@@ -3,6 +3,8 @@
 # add character to screen
 # add surface to draw on
 
+#testting
+
 
 import pygame
 import mainCharacter

@@ -1,4 +1,6 @@
 import pygame
+import mainCharacter
+
 
 #test
 class StrawhatsGame:

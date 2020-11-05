@@ -10,16 +10,14 @@ class MainCharacter:
         self.x_pos = x
         self.y_pos = y
 
+
         self.image = pygame.image.load('images/ship.bmp')
         self.rect = pygame.Rect(self.x_pos, self.y_pos, 15, 15)
 
-    def print_name(self):
-        print(self.name)
-
-    def moveVertically(self, distance, highestDistance, smallestDistance):
+    def moveVertically(self, distance):                                   #Alex: removed highestDistance and smallestDistance
         self.y_pos = self.y_pos + distance
         self.rect = pygame.Rect(self.x_pos, self.y_pos, 15, 15)
 
-    def moveHorizontally(self, distance, highestDistance, smallestDistance):
+    def moveHorizontally(self, distance):
         self.x_pos = self.x_pos + distance
         self.rect = pygame.Rect(self.x_pos, self.y_pos, 15, 15)             #KIM: what is highestDistance and smallestDistance supposed to be?

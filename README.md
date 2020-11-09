@@ -1,4 +1,4 @@
-# Strawhats
+# CovidBlaster
 
 ## Project Description
 For our project, our team will build a single player 2d platform survival game based around the Covid-19 pandemic. 
@@ -17,3 +17,8 @@ the game on Pygame before we are able to use other program systems to refine the
 end we want to deliver a survival game where players must avoid and kill infected in order to survive while keeping track of 
 their highscore. Other features such as upgrades, weapons, and levels are added on features to make the game more challenging 
 and enjoyable for the players.
+
+DEPENDENCIES:
+Python 3.7.9
+pygame
+pygame-menu

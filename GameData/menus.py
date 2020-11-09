@@ -1,3 +1,4 @@
+# Functions for menu creation are defined here to avoid clutter in CovidBlaster
 import pygame_menu
 
 

@@ -19,6 +19,7 @@ their highscore. Other features such as upgrades, weapons, and levels are added 
 and enjoyable for the players.
 
 DEPENDENCIES:
-Python 3.7.9
-pygame
-pygame-menu
+- 
+- Python 3.7.9
+- pygame [https://www.pygame.org/]
+- pygame-menu [https://pygame-menu.readthedocs.io/en/latest/]

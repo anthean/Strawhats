@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import namedtuple
 from GameState import GameState
 import pygame
 import pygame_menu
@@ -13,16 +13,16 @@ FPS = 60
 class CovidBlaster:
     def __init__(self):
         self.resolution = (WIDTH, HEIGHT)
-        self.menu = defaultdict(pygame_menu.Menu)
         self.state = GameState()
         self.display = None
+        self.menu = None
         self.current_menu = None
 
     def run(self):
         pygame.init()
         self.initialize_window()
         self.initialize_menus()
-        self.current_menu = self.menu['MAIN MENU']
+        self.current_menu = self.menu.main_menu
 
         while True:
             self.current_menu.mainloop(self.display, fps_limit=FPS)
@@ -32,33 +32,35 @@ class CovidBlaster:
         self.resolution = self.display.get_size()
 
     def initialize_menus(self):
-        main_choices = (self.play, self.high_scores, self.settings, pygame_menu.events.EXIT)
-        play_choices = (self.state.set_name, self.main_menu)
-        settings_choices = (self.set_resolution, self.main_menu)
-        self.menu['MAIN MENU'] = Menus.create_main_menu(self.resolution, main_choices)
-        self.menu['PLAY'] = Menus.create_play_menu(self.resolution, play_choices)
-        self.menu['HIGH SCORES'] = Menus.create_hs_menu(self.resolution, self.main_menu)
-        self.menu['SETTINGS'] = Menus.create_settings_menu(self.resolution, settings_choices)
+        main_choices = (self.set_play, self.set_high_scores, self.set_settings, pygame_menu.events.EXIT)
+        play_choices = (self.state.set_name, self.set_main_menu)
+        settings_choices = (self.set_resolution, self.set_main_menu)
+        Menu = namedtuple('Menu', ['main_menu', 'play', 'high_scores', 'settings'])
+        main_menu = Menus.create_main_menu(self.resolution, main_choices)
+        play = Menus.create_play_menu(self.resolution, play_choices)
+        high_scores = Menus.create_hs_menu(self.resolution, self.set_main_menu)
+        settings = Menus.create_settings_menu(self.resolution, settings_choices)
+        self.menu = Menu(main_menu, play, high_scores, settings)
 
-    def main_menu(self):
+    def set_main_menu(self):
         self.current_menu.disable()
-        self.current_menu = self.menu['MAIN MENU']
+        self.current_menu = self.menu.main_menu
         self.current_menu.enable()
 
-    def play(self):
+    def set_play(self):
         self.current_menu.disable()
         self.state.new_game()
-        self.current_menu = self.menu['PLAY']
+        self.current_menu = self.menu.play
         self.current_menu.enable()
 
-    def high_scores(self):
+    def set_high_scores(self):
         self.current_menu.disable()
-        self.current_menu = self.menu['HIGH SCORES']
+        self.current_menu = self.menu.high_scores
         self.current_menu.enable()
 
-    def settings(self):
+    def set_settings(self):
         self.current_menu.disable()
-        self.current_menu = self.menu['SETTINGS']
+        self.current_menu = self.menu.settings
         self.current_menu.enable()
 
     def set_resolution(self, resolution):

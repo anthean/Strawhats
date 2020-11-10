@@ -20,13 +20,14 @@ class CovidBlaster:
         self.display = None
         self.menu = None
         self.current_menu = None
+        self.audio_engine = None
 
     # Runs the game
     def run(self):
         pygame.init()
         self.initialize_window()
         self.initialize_menus()
-        self.current_menu = self.menu.main_menu
+        self.initialize_audio()
 
         while True:
             self.current_menu.mainloop(self.display, fps_limit=FPS)
@@ -38,7 +39,7 @@ class CovidBlaster:
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
     def initialize_menus(self):
-        main_choices = (self.set_play, self.set_high_scores, self.set_settings, pygame_menu.events.EXIT)
+        main_choices = (self.set_play_menu, self.set_high_scores_menu, self.set_settings_menu, pygame_menu.events.EXIT)
         play_choices = (self.state.set_name, self.set_main_menu)
         settings_choices = (self.set_resolution, self.set_main_menu)
         Menu = namedtuple('Menu', ['main_menu', 'play', 'high_scores', 'settings'])
@@ -47,6 +48,13 @@ class CovidBlaster:
         high_scores = menus.create_hs_menu(self.resolution, self.set_main_menu)
         settings = menus.create_settings_menu(self.resolution, settings_choices)
         self.menu = Menu(main_menu, play, high_scores, settings)
+        self.current_menu = self.menu.main_menu
+
+    # Initializes the audio engine
+    def initialize_audio(self):
+        self.audio_engine = pygame_menu.sound.Sound()
+        self.audio_engine.set_sound(pygame_menu.sound.SOUND_TYPE_WIDGET_SELECTION, './assets/sfx/confirm.wav')
+        self.current_menu.set_sound(self.audio_engine)
 
     # Sets the current menu to the main menu
     def set_main_menu(self):
@@ -55,20 +63,20 @@ class CovidBlaster:
         self.current_menu.enable()
 
     # Sets the current menu to the play menu and the game state to a new game
-    def set_play(self):
+    def set_play_menu(self):
         self.current_menu.disable()
         self.state.new_game()
         self.current_menu = self.menu.play
         self.current_menu.enable()
 
     # Sets the current menu to the high score menu
-    def set_high_scores(self):
+    def set_high_scores_menu(self):
         self.current_menu.disable()
         self.current_menu = self.menu.high_scores
         self.current_menu.enable()
 
     # Sets the current menu to the settings menu
-    def set_settings(self):
+    def set_settings_menu(self):
         self.current_menu.disable()
         self.current_menu = self.menu.settings
         self.current_menu.enable()

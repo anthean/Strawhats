@@ -3,7 +3,7 @@
 
 # Base class for entities
 class Character:
-    def __init__(self, dimensions, location):
+    def __init__(self, dimensions: tuple, location: tuple):
         self._width, self._height = (None, None)
         self._x, self._y = (None, None)
         self.set_dimensions(dimensions)

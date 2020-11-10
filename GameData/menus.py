@@ -2,8 +2,11 @@
 import pygame_menu
 
 
-# Global variable for theme
-THEME = pygame_menu.themes.THEME_BLUE
+# Global variables for theme and font
+FONT = pygame_menu.font.FONT_8BIT
+THEME = pygame_menu.themes.THEME_DEFAULT
+THEME.title_font = FONT
+THEME.widget_font = FONT
 
 
 def create_main_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:

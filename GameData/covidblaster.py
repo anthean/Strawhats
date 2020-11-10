@@ -21,6 +21,7 @@ class CovidBlaster:
         self.menu = None
         self.current_menu = None
         self.audio_engine = None
+        self.high_scores = None
 
     # Runs the game
     def run(self):
@@ -28,6 +29,7 @@ class CovidBlaster:
         self.initialize_window()
         self.initialize_menus()
         self.initialize_audio()
+        self.get_high_scores()
 
         while True:
             self.current_menu.mainloop(self.display, fps_limit=FPS)
@@ -73,7 +75,19 @@ class CovidBlaster:
     def set_high_scores_menu(self):
         self.current_menu.disable()
         self.current_menu = self.menu.high_scores
+        self.current_menu.clear()
+
+        for score in self.high_scores:
+            name, value = score.strip().split(':')
+            self.current_menu.add_label(f'{name:>30}{value:>30}', align=pygame_menu.locals.ALIGN_LEFT)
+
+        self.current_menu.add_button('BACK', self.set_main_menu)
         self.current_menu.enable()
+
+    # Gets the high scores from the text file and stores it in a list
+    def get_high_scores(self):
+        with open('high_scores.txt') as f:
+            self.high_scores = f.readlines()
 
     # Sets the current menu to the settings menu
     def set_settings_menu(self):

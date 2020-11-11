@@ -6,6 +6,7 @@ import pygame
 import pygame_menu
 import menus
 
+#alex was here
 
 # Global variables for initial window settings
 WIDTH = 800

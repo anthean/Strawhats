@@ -6,8 +6,7 @@ import pygame
 import pygame_menu
 import menus
 
-#alex was here asdf new comment here
-#meow
+
 # Global variables for initial window settings
 WIDTH = 800
 HEIGHT = 600
@@ -44,13 +43,15 @@ class CovidBlaster:
     def initialize_menus(self):
         main_choices = (self.set_play_menu, self.set_high_scores_menu, self.set_settings_menu, pygame_menu.events.EXIT)
         play_choices = (self.state.set_name, self.set_main_menu)
-        settings_choices = (self.set_resolution, self.set_main_menu)
-        Menu = namedtuple('Menu', ['main_menu', 'play', 'high_scores', 'settings'])
+        settings_choices = (self.set_confirmation_menu, self.set_main_menu)
+        confirmation_choices = (self.clear_high_scores, self.set_settings_menu)
+        Menu = namedtuple('Menu', ['main_menu', 'play', 'high_scores', 'settings', 'confirmation'])
         main_menu = menus.create_main_menu(self.resolution, main_choices)
         play = menus.create_play_menu(self.resolution, play_choices)
         high_scores = menus.create_hs_menu(self.resolution, self.set_main_menu)
         settings = menus.create_settings_menu(self.resolution, settings_choices)
-        self.menu = Menu(main_menu, play, high_scores, settings)
+        confirmation = menus.create_confirmation_menu(self.resolution, confirmation_choices)
+        self.menu = Menu(main_menu, play, high_scores, settings, confirmation)
         self.current_menu = self.menu.main_menu
 
     # Initializes the audio engine
@@ -96,9 +97,17 @@ class CovidBlaster:
         self.current_menu = self.menu.settings
         self.current_menu.enable()
 
-    # Sets the current resolution to the one being passed in
-    def set_resolution(self, resolution: tuple):
-        self.resolution = resolution
+    def set_confirmation_menu(self):
+        self.current_menu.disable()
+        self.current_menu = self.menu.confirmation
+        self.current_menu.enable()
+
+    # Clears the high scores
+    def clear_high_scores(self):
+        with open('high_scores.txt', 'w') as f: f.truncate(0)
+        self.high_scores = []
+        self.set_settings_menu()
+
 
 
 if __name__ == '__main__':

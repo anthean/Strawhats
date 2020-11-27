@@ -1,6 +1,7 @@
 # Functions for menu creation are defined here to avoid clutter in CovidBlaster
-from pygame import font
+import pygame
 import pygame_menu
+
 
 # Global variables for theme and font
 FONT = './assets/font/m5x7.ttf'
@@ -37,5 +38,15 @@ def create_hs_menu(resolution: tuple, choice: callable) -> pygame_menu.Menu:
 def create_settings_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
     x, y = resolution
     settings_menu = pygame_menu.Menu(y, x, 'SETTINGS', theme=THEME)
+    settings_menu.add_button('CLEAR HIGH SCORES', choice[0])
     settings_menu.add_button('BACK', choice[1])
     return settings_menu
+
+
+def create_confirmation_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
+    x, y = resolution
+    confirmation_menu = pygame_menu.Menu(y, x, 'SETTINGS', theme=THEME)
+    confirmation_menu.add_label('ARE YOU SURE?')
+    confirmation_menu.add_button('YES', choice[0])
+    confirmation_menu.add_button('NO', choice[1])
+    return confirmation_menu

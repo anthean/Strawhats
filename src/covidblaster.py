@@ -64,6 +64,7 @@ class CovidBlaster:
     def set_main_menu(self):
         self.current_menu.disable()
         self.current_menu = self.menu.main_menu
+        self.current_menu.set_sound(self.audio_engine)
         self.current_menu.enable()
 
     # Sets the current menu to the play menu and the game state to a new game
@@ -71,12 +72,14 @@ class CovidBlaster:
         self.current_menu.disable()
         self.state.new_game()
         self.current_menu = self.menu.play
+        self.current_menu.set_sound(self.audio_engine)
         self.current_menu.enable()
 
     # Sets the current menu to the high score menu
     def set_high_scores_menu(self):
         self.current_menu.disable()
         self.current_menu = self.menu.high_scores
+        self.current_menu.set_sound(self.audio_engine)
         self.current_menu.clear()
 
         for score in self.high_scores:
@@ -95,11 +98,13 @@ class CovidBlaster:
     def set_settings_menu(self):
         self.current_menu.disable()
         self.current_menu = self.menu.settings
+        self.current_menu.set_sound(self.audio_engine)
         self.current_menu.enable()
 
     def set_confirmation_menu(self):
         self.current_menu.disable()
         self.current_menu = self.menu.confirmation
+        self.current_menu.set_sound(self.audio_engine)
         self.current_menu.enable()
 
     # Clears the high scores

@@ -13,19 +13,27 @@ THEME.widget_font = FONT
 def create_main_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
     x, y = resolution
     main_menu = pygame_menu.Menu(y, x, 'COVID BLASTER', theme=THEME)
-    main_menu.add_button('Play', choice[0])
-    main_menu.add_button('High Scores', choice[1])
-    main_menu.add_button('Settings', choice[2])
-    main_menu.add_button('Quit', choice[3])
+    main_menu.add_button('PLAY', choice[0])
+    main_menu.add_button('HIGH SCORES', choice[1])
+    main_menu.add_button('SETTINGS', choice[2])
+    main_menu.add_button('QUIT', choice[3])
     return main_menu
 
 
 def create_play_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
     x, y = resolution
     play_menu = pygame_menu.Menu(y, x, 'COVID BLASTER', theme=THEME)
-    play_menu.add_selector('COLOR: ', [('RED', None), ('GREEN', None), ('BLUE', None), ('YELLOW', None), ('BLACK', None)])
-    play_menu.add_text_input('ENTER A NAME: ', default='COVIDBLASTER', onchange=choice[0], onreturn=choice[0])
-    play_menu.add_button('BACK', choice[1])
+    play_menu.add_selector('COLOR: ', [
+                          ('RED', './assets/sprites/CHARACTER_SPRITES/Red/'), 
+                          ('GREEN', './assets/sprites/CHARACTER_SPRITES/Green/'),
+                          ('BLUE', './assets/sprites/CHARACTER_SPRITES/Blue/'),
+                          ('YELLOW', './assets/sprites/CHARACTER_SPRITES/Yellow/'),
+                          ('BLACK', './assets/sprites/CHARACTER_SPRITES/Black/')
+                          ], onchange=choice[0], onreturn=choice[0])
+    
+    play_menu.add_text_input('ENTER A NAME: ', default='COVIDBLASTER', onchange=choice[1], onreturn=choice[1])
+    play_menu.add_button('START', choice[2])
+    play_menu.add_button('BACK', choice[3])
     return play_menu
 
 

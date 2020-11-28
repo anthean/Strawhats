@@ -3,36 +3,36 @@
 
 # Base class for entities
 class Character:
-    def __init__(self, dimensions: tuple, location: tuple):
-        self._width, self._height = (None, None)
-        self._x, self._y = (None, None)
-        self.set_dimensions(dimensions)
-        self.set_location(location)
-        self._health_points = None
-        self._attack_points = None
+    def __init__(self):
+        self.width, self.height = (None, None)
+        self.x, self.y = (None, None)
+        self.dimensions = (self.width, self.height)
+        self.location = (self.x, self.y)
+        self.health_points = None
+        self.attack_points = None
 
     # Setters
     def set_dimensions(self, dimensions):
-        self._width, self._height = dimensions
+        self.width, self.height = dimensions
 
     def set_location(self, location):
-        self._x, self._y = location
+        self.x, self.y = location
 
     def set_hp(self, hp):
-        self._health_points = hp
+        self.health_points = hp
 
     def set_ap(self, ap):
-        self._attack_points = ap
+        self.attack_points = ap
 
     # Getters
     def dimensions(self) -> tuple:
-        return self._width, self._height
+        return self.width, self.height
 
     def location(self) -> tuple:
-        return self._x, self._y
+        return self.x, self.y
 
     def hp(self) -> int:
-        return self._health_points
+        return self.health_points
 
     def ap(self) -> int:
-        return self._attack_points
+        return self.attack_points

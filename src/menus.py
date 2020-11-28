@@ -23,6 +23,8 @@ def create_main_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
 def create_play_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
     x, y = resolution
     play_menu = pygame_menu.Menu(y, x, 'COVID BLASTER', theme=THEME)
+    play_menu.add_selector('COLOR: ', [('RED', None), ('GREEN', None), ('BLUE', None), ('YELLOW', None), ('BLACK', None)])
+    play_menu.add_text_input('ENTER A NAME: ', default='COVIDBLASTER', onchange=choice[0], onreturn=choice[0])
     play_menu.add_button('BACK', choice[1])
     return play_menu
 
@@ -30,7 +32,7 @@ def create_play_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
 def create_hs_menu(resolution: tuple, choice: callable) -> pygame_menu.Menu:
     x, y = resolution
     hs_menu = pygame_menu.Menu(y, x, 'HIGH SCORES', theme=THEME)
-    for i in range(10): hs_menu.add_label('')
+    for _ in range(10): hs_menu.add_label('')
     hs_menu.add_button('BACK', choice)
     return hs_menu
 

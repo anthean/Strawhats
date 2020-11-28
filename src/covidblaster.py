@@ -36,6 +36,8 @@ class CovidBlaster:
 
     # Initializes the window
     def initialize_window(self):
+        pygame.display.init()
+        pygame.display.set_caption('CovidBlaster')
         self.display = pygame.display.set_mode(self.resolution, pygame.SCALED)
         self.resolution = self.display.get_size()
 
@@ -58,6 +60,10 @@ class CovidBlaster:
     def initialize_audio(self):
         self.audio_engine = pygame_menu.sound.Sound()
         self.audio_engine.set_sound(pygame_menu.sound.SOUND_TYPE_WIDGET_SELECTION, './assets/sfx/confirm.wav')
+        self.audio_engine.set_sound(pygame_menu.sound.SOUND_TYPE_OPEN_MENU, './assets/sfx/confirm.wav')
+        self.audio_engine.set_sound(pygame_menu.sound.SOUND_TYPE_CLOSE_MENU, './assets/sfx/confirm.wav')
+        self.audio_engine.set_sound(pygame_menu.sound.SOUND_TYPE_KEY_ADDITION, './assets/sfx/confirm.wav')
+        self.audio_engine.set_sound(pygame_menu.sound.SOUND_TYPE_KEY_DELETION, './assets/sfx/confirm.wav')
         self.current_menu.set_sound(self.audio_engine)
 
     # Sets the current menu to the main menu
@@ -84,7 +90,7 @@ class CovidBlaster:
 
         for score in self.high_scores:
             name, value = score.strip().split(':')
-            self.current_menu.add_label(f'{name:>30}{value:>30}', align=pygame_menu.locals.ALIGN_LEFT)
+            self.current_menu.add_label(f'{name:<30}{value:>30}')
 
         self.current_menu.add_button('BACK', self.set_main_menu)
         self.current_menu.enable()
@@ -112,6 +118,7 @@ class CovidBlaster:
         with open('high_scores.txt', 'w') as f: f.truncate(0)
         self.high_scores = []
         self.set_settings_menu()
+
 
 
 

@@ -11,6 +11,8 @@ from window_settings import *
 class CovidBlaster:
     def __init__(self):
         self.state = GameState()
+        self.pcolor = './assets/sprites/CHARACTER_SPRITES/Red/'
+        self.difficulty = 3
         self.display = None
         self.menu = None
         self.current_menu = None
@@ -31,15 +33,15 @@ class CovidBlaster:
     # Plays the game
     def play(self):
         self.current_menu.disable()
-        self.state.start()
         self.state.set_player(self.pcolor, self.difficulty)
+        self.state.start()
 
 
     # Initializes the window
     def initialize_window(self):
         pygame.init()
-        if FULLSCREEN: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED | pygame.FULLSCREEN)
-        else: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED)
+        if FULLSCREEN: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED | pygame.FULLSCREEN, vsync=1)
+        else: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED, vsync=1)
         pygame.display.set_caption('COVIDBLASTER')
 
 

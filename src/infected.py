@@ -1,4 +1,5 @@
-import pygame_functions as pgf
+import pygame
+from window_settings import *
 
 
 class Infected():

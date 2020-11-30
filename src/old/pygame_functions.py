@@ -4,7 +4,6 @@
 
 
 import pygame, sys, os
-from math import sqrt, ceil
 
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
@@ -17,6 +16,7 @@ musicPaused = False
 hiddenSprites = pygame.sprite.OrderedUpdates()
 screenRefresh = True
 background = None
+screen = ""
 
 keydict = {"space": pygame.K_SPACE, "esc": pygame.K_ESCAPE, "up": pygame.K_UP, "down": pygame.K_DOWN,
            "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "return": pygame.K_RETURN,
@@ -66,7 +66,6 @@ keydict = {"space": pygame.K_SPACE, "esc": pygame.K_ESCAPE, "up": pygame.K_UP, "
            "num7": pygame.K_KP7,
            "num8": pygame.K_KP8,
            "num9": pygame.K_KP9}
-screen = ""
 
 
 class Background():
@@ -87,22 +86,6 @@ class Background():
         screen.blit(self.tiles[0][0], [0, 0])
         self.surface = screen.copy()
 
-    def scroll(self, x, y):
-        self.stagePosX -= x
-        self.stagePosY -= y
-        col = (self.stagePosX % (self.tileWidth * len(self.tiles[0]))) // self.tileWidth
-        xOff = (0 - self.stagePosX % self.tileWidth)
-        row = (self.stagePosY % (self.tileHeight * len(self.tiles))) // self.tileHeight
-        yOff = (0 - self.stagePosY % self.tileHeight)
-
-        col2 = ((self.stagePosX + self.tileWidth) % (self.tileWidth * len(self.tiles[0]))) // self.tileWidth
-        row2 = ((self.stagePosY + self.tileHeight) % (self.tileHeight * len(self.tiles))) // self.tileHeight
-        screen.blit(self.tiles[row][col], [xOff, yOff])
-        screen.blit(self.tiles[row][col2], [xOff + self.tileWidth, yOff])
-        screen.blit(self.tiles[row2][col], [xOff, yOff + self.tileHeight])
-        screen.blit(self.tiles[row2][col2], [xOff + self.tileWidth, yOff + self.tileHeight])
-
-        self.surface = screen.copy()
 
     def setColour(self, colour):
         self.colour = parseColour(colour)
@@ -728,9 +711,6 @@ def mouseY():
     return y[1]
 
 
-def scrollBackground(x, y):
-    global background
-    background.scroll(x, y)
 
 
 def setAutoUpdate(val):

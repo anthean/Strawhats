@@ -9,12 +9,11 @@ from gamestate import GameState
 # Global variables for initial window settings
 WIDTH = 1280
 HEIGHT = 720
-FULLSCREEN = True
+FULLSCREEN = False
 
 
 class CovidBlaster:
     def __init__(self):
-        self.resolution = (WIDTH, HEIGHT)
         self.pcolor = './assets/sprites/CHARACTER_SPRITES/Red/'
         self.state = GameState()
         self.display = None
@@ -44,10 +43,9 @@ class CovidBlaster:
     # Initializes the window
     def initialize_window(self):
         pygame.init()
-        if FULLSCREEN: self.display = pygame.display.set_mode(self.resolution, pygame.SCALED | pygame.FULLSCREEN)
-        else: self.display = pygame.display.set_mode(self.resolution, pygame.SCALED)
+        if FULLSCREEN: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED | pygame.FULLSCREEN)
+        else: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED)
         pygame.display.set_caption('COVIDBLASTER')
-        self.resolution = self.display.get_size()
 
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
@@ -57,15 +55,15 @@ class CovidBlaster:
         settings_choices = (self.set_confirmation_menu, self.set_main_menu)
         confirmation_choices = (self.clear_high_scores, self.set_settings_menu)
         Menu = namedtuple('Menu', ['main_menu', 'play', 'high_scores', 'settings', 'confirmation'])
-        main_menu = menus.create_main_menu(self.resolution, main_choices)
-        play = menus.create_play_menu(self.resolution, play_choices)
-        high_scores = menus.create_hs_menu(self.resolution, self.set_main_menu)
-        settings = menus.create_settings_menu(self.resolution, settings_choices)
-        confirmation = menus.create_confirmation_menu(self.resolution, confirmation_choices)
+        main_menu = menus.create_main_menu(WIDTH, HEIGHT, main_choices)
+        play = menus.create_play_menu(WIDTH, HEIGHT, play_choices)
+        high_scores = menus.create_hs_menu(WIDTH, HEIGHT, self.set_main_menu)
+        settings = menus.create_settings_menu(WIDTH, HEIGHT, settings_choices)
+        confirmation = menus.create_confirmation_menu(WIDTH, HEIGHT, confirmation_choices)
         self.menu = Menu(main_menu, play, high_scores, settings, confirmation)
         self.current_menu = self.menu.main_menu
 
-    
+
     # Initializes the audio engine
     def initialize_audio(self):
         self.audio_engine = pygame_menu.sound.Sound()

@@ -10,6 +10,7 @@ THEME.widget_font = FONT
 THEME.title_font_size = 45
 THEME.widget_font_size = 45
 
+
 def create_main_menu(choice) -> pygame_menu.Menu:
     main_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'COVID BLASTER', theme=THEME)
     main_menu.add_button('PLAY', choice[0])

@@ -2,4 +2,4 @@
 /.idea/
 /venv/
 /.vscode/
-/GameData/__pycache__
+/src/__pycache__/

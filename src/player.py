@@ -16,7 +16,8 @@ class Player:
     def update(self, sprites):
         sprites.remove(self.current_sprite)
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT]: self.run_right()
+        if self.immune_system == 0: self.death()
+        elif keys[pygame.K_RIGHT]: self.run_right()
         elif keys[pygame.K_LEFT]: self.run_left()
         elif keys[pygame.K_UP]: self.jump()
         elif keys[pygame.K_DOWN]: self.crouch()

@@ -1,10 +1,11 @@
 # pygame_functions
-
 # Documentation at www.github.com/stevepaget/pygame_functions
 # Report bugs at https://github.com/StevePaget/Pygame_Functions/issues
 
 
 import pygame, sys, os
+from math import sqrt, ceil
+
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
@@ -144,10 +145,9 @@ class newSprite(pygame.sprite.Sprite):
 
     def changeImage(self, index):
         self.currentImage = index
-        if self.angle == 0 and self.scale == 1:
-            self.image = self.images[index]
-        else:
-            self.image = pygame.transform.rotozoom(self.images[self.currentImage], -self.angle, self.scale)
+        if self.angle == 0 and self.scale == 1: self.image = self.images[index]
+        elif isinstance(self.scale, tuple): pygame.transform.smoothscale(self.images[self.currentImage], self.scale)
+        else: self.image = pygame.transform.rotozoom(self.images[self.currentImage], -self.angle, self.scale)
         oldcenter = self.rect.center
         self.rect = self.image.get_rect()
         originalRect = self.images[self.currentImage].get_rect()
@@ -311,7 +311,6 @@ def screenSize(sizex, sizey, xpos=None, ypos=None, fullscreen=False):
         screen = pygame.display.set_mode([sizex, sizey], pygame.SCALED)
     background = Background()
     screen.fill(background.colour)
-    pygame.display.set_caption("Graphics Window")
     background.surface = screen.copy()
     pygame.display.update()
     return screen
@@ -323,16 +322,20 @@ def moveSprite(sprite, x, y, centre=False):
         updateDisplay()
 
 
-def transformSprite(sprite, scale, angle=0, hflip=False, vflip=False):
+def transformSprite(sprite, scale, hflip=False, vflip=False, angle=0):
     oldmiddle = sprite.rect.center
-    if hflip or vflip:
-        tempImage = pygame.transform.flip(sprite.images[sprite.currentImage], hflip, vflip)
-    else:
-        tempImage = sprite.images[sprite.currentImage]
-    if angle != 0 or scale != 1:
+    if hflip or vflip: tempImage = pygame.transform.flip(sprite.images[sprite.currentImage], hflip, vflip)
+    else: tempImage = sprite.images[sprite.currentImage]
+    
+    if isinstance(scale, tuple):
+        sprite.scale = scale
+        tempImage = pygame.transform.smoothscale(tempImage, scale)
+
+    elif angle != 0 or scale != 1:
         sprite.angle = angle
         sprite.scale = scale
         tempImage = pygame.transform.rotozoom(tempImage, -angle, scale)
+    
     sprite.image = tempImage
     sprite.rect = sprite.image.get_rect()
     sprite.rect.center = oldmiddle

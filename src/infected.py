@@ -1,7 +1,6 @@
-import pygame
+import pygame_functions as pgf
 
 
-class Infected(pygame.sprite.Sprite):
+class Infected():
     def __init__(self):
-        super().__init__()
-        
+        None

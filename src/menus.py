@@ -22,15 +22,14 @@ def create_main_menu(choice) -> pygame_menu.Menu:
 
 def create_play_menu(choice) -> pygame_menu.Menu:
     play_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'COVID BLASTER', theme=THEME)
+    play_menu.add_text_input('NAME: ', default='PLAYER', maxchar=10, onchange=choice[0], onreturn=choice[0])
     play_menu.add_selector('COLOR: ',
                            [('RED', './assets/sprites/CHARACTER_SPRITES/Red/'), 
                             ('GREEN', './assets/sprites/CHARACTER_SPRITES/Green/'),
                             ('BLUE', './assets/sprites/CHARACTER_SPRITES/Blue/'),
                             ('YELLOW', './assets/sprites/CHARACTER_SPRITES/Yellow/'),
                             ('BLACK', './assets/sprites/CHARACTER_SPRITES/Black/')],
-                           default=0, onchange=choice[0], onreturn=choice[0])
-    
-    play_menu.add_text_input('ENTER A NAME: ', default='PLAYER', maxchar=10, onchange=choice[1], onreturn=choice[1])
+                           default=0, onchange=choice[1], onreturn=choice[1])  
     play_menu.add_selector('DIFFICULTY: ', [('NORMAL', 3), ('INSTA-DEATH', 1)], default=0, onchange=choice[2], onreturn=choice[2])
     play_menu.add_button('START', choice[3])
     play_menu.add_button('BACK', choice[4])

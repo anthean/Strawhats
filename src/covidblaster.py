@@ -34,7 +34,7 @@ class CovidBlaster:
     def play(self):
         self.current_menu.disable()
         self.state.set_player(self.pcolor, self.difficulty)
-        self.state.start()
+        self.state.start(self.display)
 
 
     # Initializes the window
@@ -43,17 +43,18 @@ class CovidBlaster:
         if FULLSCREEN: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED | pygame.FULLSCREEN, vsync=1)
         else: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED, vsync=1)
         pygame.display.set_caption('COVIDBLASTER')
+        pygame.display.set_icon(SCALE('./assets/sprites/CHARACTER_SPRITES/Black/icon.png', (64, 64)))
 
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
     def initialize_menus(self):
         main_choices = (self.set_play_menu, self.set_high_scores_menu, self.set_settings_menu, pygame_menu.events.EXIT)
-        play_choices = (self.set_player_color, self.state.set_name, self.set_difficulty, self.play, self.set_main_menu)
+        self.play_choices = (self.state.set_name, self.set_player_color, self.set_difficulty, self.play, self.set_main_menu)
         settings_choices = (self.set_confirmation_menu, self.set_main_menu)
         confirmation_choices = (self.clear_high_scores, self.set_settings_menu)
         Menu = namedtuple('Menu', ['main_menu', 'play', 'high_scores', 'settings', 'confirmation'])
         main_menu = menus.create_main_menu(main_choices)
-        play = menus.create_play_menu(play_choices)
+        play = menus.create_play_menu(self.play_choices)
         high_scores = menus.create_hs_menu(self.set_main_menu)
         settings = menus.create_settings_menu(settings_choices)
         confirmation = menus.create_confirmation_menu(confirmation_choices)
@@ -83,7 +84,7 @@ class CovidBlaster:
     # Sets the current menu to the play menu and the game state to a new game
     def set_play_menu(self):
         self.current_menu.disable()
-        self.current_menu = self.menu.play
+        self.current_menu = menus.create_play_menu(self.play_choices)
         self.current_menu.set_sound(self.audio_engine)
         self.current_menu.enable()
         self.state = GameState()

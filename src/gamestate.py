@@ -12,30 +12,31 @@ class GameState:
         self.game_over = False
 
 
-    def start(self):
-        if FULLSCREEN: screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED, vsync=1)
-        else: screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED, vsync=1)
-        clock = pygame.time.Clock()
-        sprites = pygame.sprite.OrderedUpdates()
-        self.frame = 0
-        self.next_frame = pygame.time.get_ticks()
+    def start(self, display):
         self.score = 0
         self.game_over = False
+        self.display = display
+        clock = pygame.time.Clock()
+        sprites = pygame.sprite.OrderedUpdates()
         bg = SCALE('./assets/sprites/STAGE/stage.png', (WIDTH, HEIGHT))
-        screen.blit(bg, (0, 0))
-        surface = screen.copy()
+        self.display.blit(bg, (0, 0))
+        surface = self.display.copy()
         while True:
             self.listen_for_exit()
             sprites = self.player.update(sprites)
-            sprites.draw(screen)
+            sprites.draw(self.display)
             pygame.display.update()
-            sprites.clear(screen, surface)
+            sprites.clear(self.display, surface)
             clock.tick(FPS)
 
 
     def listen_for_exit(self):
         keys = pygame.key.get_pressed()
         if pygame.QUIT in pygame.event.get() or keys[pygame.K_ESCAPE]: pygame.quit()
+
+
+    def set_name(self, name):
+        self.name = name
 
 
     def set_player(self, pcolor, difficulty):
@@ -46,10 +47,6 @@ class GameState:
         death = Sprite(pcolor+'death.png', 8, upscale=4)
         ps = {'idle':idle, 'run':run, 'jump':jump, 'crouch':crouch, 'death':death}
         self.player = Player(ps, difficulty)
-
-
-    def set_name(self, name):
-        self.name = name
 
 
     def set_score(self, score):

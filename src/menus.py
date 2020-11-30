@@ -1,5 +1,4 @@
 # Functions for menu creation are defined here to avoid clutter in CovidBlaster
-import pygame
 import pygame_menu
 
 
@@ -8,7 +7,8 @@ FONT = './assets/font/m5x7.ttf'
 THEME = pygame_menu.themes.THEME_DEFAULT
 THEME.title_font = FONT
 THEME.widget_font = FONT
-
+THEME.title_font_size = 45
+THEME.widget_font_size = 45
 
 def create_main_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
     x, y = resolution
@@ -31,7 +31,7 @@ def create_play_menu(resolution: tuple, choice: tuple) -> pygame_menu.Menu:
                           ('BLACK', './assets/sprites/CHARACTER_SPRITES/Black/')
                           ], onchange=choice[0], onreturn=choice[0])
     
-    play_menu.add_text_input('ENTER A NAME: ', default='COVIDBLASTER', onchange=choice[1], onreturn=choice[1])
+    play_menu.add_text_input('ENTER A NAME: ', default='PLAYER', maxchar=10, onchange=choice[1], onreturn=choice[1])
     play_menu.add_button('START', choice[2])
     play_menu.add_button('BACK', choice[3])
     return play_menu

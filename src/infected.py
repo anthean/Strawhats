@@ -1,7 +1,7 @@
-from character import Character
+import pygame
 
 
-# Infected inherits from character class
-class Infected(Character):
+class Infected(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        

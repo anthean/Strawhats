@@ -6,7 +6,7 @@ class Sprite(pygame.sprite.Sprite):
     def __init__(self, file, count=1, upscale=0):
         pygame.sprite.Sprite.__init__(self)
         img = pygame.image.load(file).convert_alpha()
-        for _ in range(int(upscale/2)): img = SCALE2X(img)
+        img = SCALE2X(img, upscale)
         self.w = img.get_width() // count
         self.h = img.get_height()
         self.spritesheet = []

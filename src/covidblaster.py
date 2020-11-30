@@ -37,13 +37,23 @@ class CovidBlaster:
         self.state.start(self.display)
 
 
+    # Used to set the player color in the play menu
+    def set_player_color(self, _, path):
+        self.pcolor = path 
+
+
+    # Used to set the difficulty in the play menu
+    def set_difficulty(self, _, difficulty):
+        self.difficulty = difficulty
+
+
     # Initializes the window
     def initialize_window(self):
         pygame.init()
         if FULLSCREEN: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED | pygame.FULLSCREEN, vsync=1)
         else: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED, vsync=1)
         pygame.display.set_caption('COVIDBLASTER')
-        pygame.display.set_icon(SCALE('./assets/sprites/CHARACTER_SPRITES/Black/icon.png', (64, 64)))
+        pygame.display.set_icon(RESIZE('./assets/sprites/CHARACTER_SPRITES/Black/icon.png', (64, 64)))
 
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
@@ -88,16 +98,6 @@ class CovidBlaster:
         self.current_menu.set_sound(self.audio_engine)
         self.current_menu.enable()
         self.state = GameState()
-
-
-    # Used to set the player color in the play menu
-    def set_player_color(self, _, path):
-        self.pcolor = path 
-
-
-    # Used to set the difficulty in the play menu
-    def set_difficulty(self, _, difficulty):
-        self.difficulty = difficulty
 
 
     # Sets the current menu to the high score menu

@@ -18,7 +18,6 @@ class GameState:
         self.display = display
         clock = pygame.time.Clock()
         sprites = pygame.sprite.OrderedUpdates()
-        # bg = SCALE('./assets/sprites/STAGE/stage.png', (WIDTH, HEIGHT))
         bg = SCALE2X(pygame.image.load('./assets/sprites/STAGE/stage.png'), 3)
         bg = RESIZE(bg, (WIDTH, HEIGHT))
         self.display.blit(bg, (0, 0))

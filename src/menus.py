@@ -45,8 +45,10 @@ def create_hs_menu(choice) -> pygame_menu.Menu:
 
 def create_settings_menu(choice) -> pygame_menu.Menu:
     settings_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'SETTINGS', theme=THEME)
-    settings_menu.add_button('CLEAR HIGH SCORES', choice[0])
-    settings_menu.add_button('BACK', choice[1])
+    if FULLSCREEN: settings_menu.add_selector('FULLSCREEN: ', [('ON', None), ('OFF', None)], onchange=choice[0])
+    else: settings_menu.add_selector('FULLSCREEN: ', [('OFF', None), ('ON', None)], onchange=choice[0])
+    settings_menu.add_button('CLEAR HIGH SCORES', choice[1])
+    settings_menu.add_button('BACK', choice[2])
     return settings_menu
 
 

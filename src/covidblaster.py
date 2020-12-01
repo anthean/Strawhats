@@ -12,6 +12,7 @@ class CovidBlaster:
     def __init__(self):
         self.state = GameState()
         self.pcolor = './assets/sprites/CHARACTER_SPRITES/Red/'
+        self.toggle = FULLSCREEN
         self.difficulty = 3
         self.display = None
         self.menu = None
@@ -50,17 +51,36 @@ class CovidBlaster:
     # Initializes the window
     def initialize_window(self):
         pygame.init()
-        if FULLSCREEN: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED | pygame.FULLSCREEN, vsync=1)
-        else: self.display = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED, vsync=1)
+        if FULLSCREEN: self.display = pygame.display.set_mode([WIDTH, HEIGHT], pygame.SCALED | pygame.FULLSCREEN)
+        else: self.display = pygame.display.set_mode([WIDTH, HEIGHT], pygame.SCALED)
         pygame.display.set_caption('COVIDBLASTER')
         pygame.display.set_icon(RESIZE('./assets/sprites/CHARACTER_SPRITES/Black/icon.png', (64, 64)))
+
+
+    # Toggle between fs and windowed
+    def toggle_fs(self, _, __):
+        if self.toggle:
+            self.set_windowed()
+            self.toggle = False
+        else:
+            self.set_fs()
+            self.toggle = True
+
+
+    def set_fs(self):
+        self.display = pygame.display.set_mode([WIDTH, HEIGHT], pygame.SCALED | pygame.FULLSCREEN)
+
+
+    def set_windowed(self):
+        pygame.display.toggle_fullscreen()
+        self.display = pygame.display.set_mode([WIDTH, HEIGHT], pygame.SCALED)
 
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
     def initialize_menus(self):
         main_choices = (self.set_play_menu, self.set_high_scores_menu, self.set_settings_menu, pygame_menu.events.EXIT)
         self.play_choices = (self.state.set_name, self.set_player_color, self.set_difficulty, self.play, self.set_main_menu)
-        settings_choices = (self.set_confirmation_menu, self.set_main_menu)
+        settings_choices = (self.toggle_fs, self.set_confirmation_menu, self.set_main_menu)
         confirmation_choices = (self.clear_high_scores, self.set_settings_menu)
         Menu = namedtuple('Menu', ['main_menu', 'play', 'high_scores', 'settings', 'confirmation'])
         main_menu = menus.create_main_menu(main_choices)

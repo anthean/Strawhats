@@ -8,8 +8,9 @@ class Player:
         self.current_sprite = self.ps['idle']
         self.immune_system = difficulty
         self.x = PX(0.5)
-        self.y = PY(0.5)
-        self.speed = 0
+        self.y = PY(0.82)
+        self.speed = PX(0.0045)
+        self.flip = False
         self.frame = {'idle':0, 'run':0, 'jump':0, 'crouch':0, 'death':0}
         self.next_frame = pygame.time.get_ticks()
 
@@ -31,39 +32,44 @@ class Player:
         if pygame.time.get_ticks() > self.next_frame:
             self.frame['idle'] = (self.frame['idle']+1) % 5
             self.next_frame += FPS
-        self.current_sprite.update_sprite(self.frame['idle'])
+        self.current_sprite.update_sprite(self.frame['idle'], self.flip)
 
     def run_left(self):
+        self.flip = True
         self.current_sprite = self.ps['run']
         if pygame.time.get_ticks() > self.next_frame:
             self.frame['run'] = (self.frame['run']+1) % 6
             self.next_frame += FPS
-        self.current_sprite.update_sprite(self.frame['run'])
+        self.x -= self.speed
+        self.current_sprite.update_sprite(self.frame['run'], self.flip)
     
     def run_right(self):
+        self.flip = False
         self.current_sprite = self.ps['run']
         if pygame.time.get_ticks() > self.next_frame:
             self.frame['run'] = (self.frame['run']+1) % 6
             self.next_frame += FPS
-        self.current_sprite.update_sprite(self.frame['run'])
+        self.x += self.speed
+        self.current_sprite.update_sprite(self.frame['run'], self.flip)
     
     def jump(self):
         self.current_sprite = self.ps['jump']
         if pygame.time.get_ticks() > self.next_frame:
-            self.frame['jump'] = (self.frame['jump']+1) % 2
+            self.frame['jump'] = 1
             self.next_frame += FPS
-        self.current_sprite.update_sprite(self.frame['jump'])
+        self.current_sprite.update_sprite(self.frame['jump'], self.flip)
         
     def crouch(self):
         self.current_sprite = self.ps['crouch']
         if pygame.time.get_ticks() > self.next_frame:
-            self.frame['crouch'] = (self.frame['crouch']+1) % 3
+            self.frame['crouch'] += 1
             self.next_frame += FPS
-        self.current_sprite.update_sprite(self.frame['crouch'])
+        if self.frame['crouch'] > 2: self.frame['crouch'] = 2
+        self.current_sprite.update_sprite(self.frame['crouch'], self.flip)
     
     def death(self):
         self.current_sprite = self.ps['death']
         if pygame.time.get_ticks() > self.next_frame:
             self.frame['death'] = (self.frame['death']+1) % 8
             self.next_frame += FPS
-        self.current_sprite.update_sprite(self.frame['death'])
+        self.current_sprite.update_sprite(self.frame['death'], self.flip)

@@ -5,12 +5,14 @@ import pygame
 FPS = 60
 WIDTH = 1280
 HEIGHT = 720
-FULLSCREEN = True
+FULLSCREEN = False
 
 
 # Utility Functions
 PX = lambda x: int(x * WIDTH)
 PY = lambda y: int(y * HEIGHT)
+FLIP = lambda img: pygame.transform.flip(img, True, False)
+
 
 def RESIZE(file, dim):
     if isinstance(file, str): return pygame.transform.smoothscale(pygame.image.load(file).convert_alpha(), dim)
@@ -19,5 +21,4 @@ def RESIZE(file, dim):
 def SCALE2X(img, x):
     for _ in range(x):
         img = pygame.transform.scale2x(img)
-
     return img

@@ -34,15 +34,6 @@ class Player:
             self.next_frame += FPS
         self.current_sprite.update_sprite(self.frame['idle'], self.flip)
 
-    def run_left(self):
-        self.flip = True
-        self.current_sprite = self.ps['run']
-        if pygame.time.get_ticks() > self.next_frame:
-            self.frame['run'] = (self.frame['run']+1) % 6
-            self.next_frame += FPS
-        self.x -= self.speed
-        self.current_sprite.update_sprite(self.frame['run'], self.flip)
-    
     def run_right(self):
         self.flip = False
         self.current_sprite = self.ps['run']
@@ -50,6 +41,17 @@ class Player:
             self.frame['run'] = (self.frame['run']+1) % 6
             self.next_frame += FPS
         self.x += self.speed
+        if self.x >= PX(1): self.x = PX(0)
+        self.current_sprite.update_sprite(self.frame['run'], self.flip)
+    
+    def run_left(self):
+        self.flip = True
+        self.current_sprite = self.ps['run']
+        if pygame.time.get_ticks() > self.next_frame:
+            self.frame['run'] = (self.frame['run']+1) % 6
+            self.next_frame += FPS
+        self.x -= self.speed
+        if self.x <= PX(0): self.x = PX(1)
         self.current_sprite.update_sprite(self.frame['run'], self.flip)
     
     def jump(self):

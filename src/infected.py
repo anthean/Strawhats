@@ -1,4 +1,3 @@
-import pygame
 from window_settings import *
 
 

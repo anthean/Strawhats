@@ -1,4 +1,3 @@
-import pygame
 import pygame_menu
 import menus
 
@@ -37,8 +36,8 @@ class CovidBlaster:
         self.running_preview = False
         self.current_menu.disable()
         self.state.set_player(self.pcolor, self.difficulty)
+        self.state.set_music(self.music)
         self.state.start(self.display)
-
 
     # Initializes the window
     def initialize_window(self):
@@ -46,7 +45,7 @@ class CovidBlaster:
         if FULLSCREEN: self.display = pygame.display.set_mode([WIDTH, HEIGHT], pygame.SCALED | pygame.FULLSCREEN)
         else: self.display = pygame.display.set_mode([WIDTH, HEIGHT], pygame.SCALED)
         pygame.display.set_caption('COVIDBLASTER')
-        pygame.display.set_icon(RESIZE('./assets/sprites/CHARACTER_SPRITES/Black/icon.png', (64, 64)))
+        pygame.display.set_icon(RESIZE('./assets/sprites/EXTRAS/icon.png', (64, 64)))
 
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
@@ -173,7 +172,7 @@ class CovidBlaster:
             self.music = False
         else:
             self.bgm.set_volume(0.25)
-            self.music = True 
+            self.music = True
 
     # Clears the high scores
     def clear_high_scores(self):

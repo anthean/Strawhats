@@ -1,4 +1,4 @@
-import pygame
+from sprite import Sprite
 from window_settings import *
 
 
@@ -6,6 +6,7 @@ class Player:
     def __init__(self, ps, difficulty):
         self.ps = ps
         self.current_sprite = self.ps['idle']
+        self.shadow = Sprite('./assets/sprites/EXTRAS/shadow.png', 1, upscale=2, resize=( PX(0.085), PY(0.1) ))
         self.frame = {'idle':0, 'run':0, 'jump':0, 'crouch':0, 'death':0}
         self.current_frame = self.frame['idle']
         self.immune_system = difficulty
@@ -26,8 +27,10 @@ class Player:
         elif keys[pygame.K_DOWN]: self.crouch()
         else: self.idle()
         self.current_sprite.update_sprite(self.current_frame, self.flip)
-        self.current_sprite.move(self.x, self.y, center=True)
-        sprites.add(self.current_sprite)
+        self.current_sprite.move(self.x, self.y)
+        shadow_adj = -PX(0.005) if self.flip else PX(0.005)
+        self.shadow.move(self.x-shadow_adj, self.y+PY(0.076))
+        sprites.add(self.current_sprite, self.shadow)
         return sprites
 
     def idle(self):

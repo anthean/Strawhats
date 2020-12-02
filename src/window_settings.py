@@ -1,4 +1,5 @@
 import pygame
+import getpass
 pygame.init()
 
 
@@ -13,6 +14,7 @@ FULLSCREEN = False
 PX = lambda x: int(x * WIDTH)
 PY = lambda y: int(y * HEIGHT)
 FLIP = lambda img: pygame.transform.flip(img, True, False)
+R = lambda left, top, width, height: pygame.Rect(PX(left), PY(top), PX(width), PY(height))
 
 def RESIZE(file, dim):
     if isinstance(file, str): return pygame.transform.smoothscale(pygame.image.load(file).convert_alpha(), dim)

@@ -1,4 +1,4 @@
-import pygame
+import sys
 import menus
 from sprite import Sprite
 from player import Player
@@ -11,41 +11,60 @@ class GameState:
         self.player = None
         self.score = 0
         self.game_over = False
-
+        self.surface = None
+        self.clock = pygame.time.Clock()
+        self.sprites = pygame.sprite.OrderedUpdates()
+        self.bg = RESIZE(SCALE2X(pygame.image.load('./assets/sprites/STAGE/stage.png'), 3), (WIDTH, HEIGHT))
+        self.current_menu = None
+        self.music = None
 
     def start(self, display):
+        self.current_menu = menus.create_intro_menu(self.continue_game)
+        self.pause_menu = menus.create_pause_menu((self.continue_game, self.quit_game()))
         self.score = 0
         self.game_over = False
         self.display = display
-        clock = pygame.time.Clock()
-        sprites = pygame.sprite.OrderedUpdates()
-        bgm = pygame.mixer.Sound('./assets/sfx/bgm.ogg')
-        bgm.set_volume(0.25)
-        bgm.play(-1)
-        bg = SCALE2X(pygame.image.load('./assets/sprites/STAGE/stage.png'), 3)
-        bg = RESIZE(bg, (WIDTH, HEIGHT))
-        self.display.blit(bg, (0, 0))
-        surface = self.display.copy()
+        self.display.blit(self.bg, (0, 0))
+        self.surface = self.display.copy()
+        self.current_menu.enable()
         while True:
-            self.listen_for_exit()
-            sprites = self.player.update(sprites)
-            sprites.draw(self.display)
-            pygame.display.update()
-            sprites.clear(self.display, surface)
-            clock.tick(FPS)
+            events = pygame.event.get()
+            if self.current_menu.is_enabled():
+                self.bgm.set_volume(0.06)
+                self.current_menu.draw(self.display)
+                self.current_menu.update(events)
+                pygame.display.update()
+                self.clock.tick(FPS)/1000.0 
+            else:
+                for event in events: self.handle_events(event)
+                self.sprites = self.player.update(self.sprites)
+                self.sprites.draw(self.display)
+                pygame.display.update() 
+                self.sprites.clear(self.display, self.surface)
+                self.clock.tick(FPS)/1000.0
 
 
-    def listen_for_exit(self):
+    def continue_game(self):
+        self.bgm.set_volume(0.20)
+        self.display.blit(self.bg, (0, 0))
+        self.current_menu.disable()
+        self.clock.tick(FPS)/1000.0
+
+    def quit_game(self):
+        self.current_menu.disable()
+
+    def handle_events(self, event):
         keys = pygame.key.get_pressed()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
-                pygame.quit()
-
+        if keys[pygame.K_ESCAPE]:
+            self.current_menu = self.pause_menu
+            self.current_menu.enable()
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
     def set_name(self, name):
         menus.SOUND.play_event()
         self.name = name.upper()
-
 
     def set_player(self, pcolor, difficulty):
         idle = Sprite(pcolor+'idle.png', 5, upscale=2)
@@ -56,6 +75,11 @@ class GameState:
         ps = {'idle':idle, 'run':run, 'jump':jump, 'crouch':crouch, 'death':death}
         self.player = Player(ps, difficulty)
 
+    def set_music(self, on):
+        self.music = on
+        self.bgm = pygame.mixer.Sound('./assets/sfx/bgm.ogg')
+        self.bgm.set_volume(0.06)
+        if on: self.bgm.play(-1)
 
     def set_score(self, score):
         self.score = score

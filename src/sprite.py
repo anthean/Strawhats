@@ -1,12 +1,12 @@
-import pygame
 from window_settings import *
 
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, file, frames=1, upscale=0):
+    def __init__(self, file, frames=1, upscale=0, resize=False):
         pygame.sprite.Sprite.__init__(self)
         img = pygame.image.load(file).convert_alpha()
         img = SCALE2X(img, upscale)
+        if resize: img = RESIZE(img, resize)
         self.w = img.get_width() // frames
         self.h = img.get_height()
         self.spritesheet = []
@@ -35,4 +35,3 @@ class Sprite(pygame.sprite.Sprite):
         self.w = self.rect.width
         self.h = self.rect.height
         self.mask = pygame.mask.from_surface(self.image)
-

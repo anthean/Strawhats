@@ -17,7 +17,7 @@ SOUND.set_sound(pygame_menu.sound.SOUND_TYPE_EVENT, './assets/sfx/key.wav')
 SOUND.set_sound(pygame_menu.sound.SOUND_TYPE_ERROR, './assets/sfx/delete.wav')
 
 
-def create_main_menu(choice) -> pygame_menu.Menu:
+def create_main_menu(choice):
     main_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'COVID BLASTER', theme=THEME)
     main_menu.add_button('PLAY', choice[0])
     main_menu.add_button('HIGH SCORES', choice[1])
@@ -27,10 +27,10 @@ def create_main_menu(choice) -> pygame_menu.Menu:
     return main_menu
 
 
-def create_play_menu(choice) -> pygame_menu.Menu:
+def create_play_menu(choice):
     play_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'COVIDBLASTER', theme=THEME)
     for _ in range(3): play_menu.add_label('')
-    play_menu.add_text_input('NAME: ', default='PLAYER', maxchar=10, onchange=choice[0], onreturn=choice[0])
+    play_menu.add_text_input('NAME: ', default=getpass.getuser().upper(), maxchar=10, onchange=choice[0], onreturn=choice[0])
     play_menu.add_selector('COLOR: ',
                            [('RED', './assets/sprites/CHARACTER_SPRITES/Red/'), 
                             ('GREEN', './assets/sprites/CHARACTER_SPRITES/Green/'),
@@ -45,7 +45,7 @@ def create_play_menu(choice) -> pygame_menu.Menu:
     return play_menu
 
 
-def create_settings_menu(choice) -> pygame_menu.Menu:
+def create_settings_menu(choice):
     settings_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'SETTINGS', theme=THEME)
     if FULLSCREEN: settings_menu.add_selector('FULLSCREEN: ', [('ON', None), ('OFF', None)], onchange=choice[0])
     else: settings_menu.add_selector('FULLSCREEN: ', [('OFF', None), ('ON', None)], onchange=choice[0])
@@ -56,10 +56,40 @@ def create_settings_menu(choice) -> pygame_menu.Menu:
     return settings_menu
 
 
-def create_confirmation_menu(choice) -> pygame_menu.Menu:
+def create_confirmation_menu(choice):
     confirmation_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'SETTINGS', theme=THEME)
     confirmation_menu.add_label('ARE YOU SURE?')
     confirmation_menu.add_button('YES', choice[0])
     confirmation_menu.add_button('NO', choice[1])
     confirmation_menu.set_sound(SOUND)
     return confirmation_menu
+
+
+def game_theme():
+    game_theme = pygame_menu.themes.THEME_DARK
+    game_theme.title_font = './assets/font/m5x7.ttf'
+    game_theme.widget_font = './assets/font/m5x7.ttf'
+    game_theme.title_font_size = PX(0.04)
+    game_theme.widget_font_size = PX(0.04)
+    img = pygame_menu.baseimage.BaseImage('./assets/sprites/STAGE/dark.png', pygame_menu.baseimage.IMAGE_MODE_FILL, (0, 0))
+    game_theme.background_color = img
+    return game_theme
+
+
+def create_intro_menu(choice):
+    intro_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'COVIDBLASTER', theme=game_theme())
+    intro_menu.add_label('DERANGED CITIZENS INFECTED WITH COVID-19 HAVE GONE MAD AND')
+    intro_menu.add_label('ARE NOT PRACTICING SAFE SOCIAL DISTANCING MEASURES.')
+    intro_menu.add_label('TAKE THEM OUT AND SURVIVE AS LONG AS YOU CAN.')
+    intro_menu.add_button('CONTINUE', choice)
+    intro_menu.set_sound(SOUND)
+    return intro_menu
+
+
+def create_pause_menu(choice):
+    pause_menu = pygame_menu.Menu(HEIGHT, WIDTH, 'COVIDBLASTER', theme=game_theme())
+    pause_menu.add_label('PAUSED')
+    pause_menu.add_button('CONTINUE', choice[0])
+    pause_menu.add_button('QUIT', choice[1])
+    pause_menu.set_sound(SOUND)
+    return pause_menu

@@ -1,4 +1,5 @@
 import pygame
+import menus
 from sprite import Sprite
 from player import Player
 from window_settings import *
@@ -18,6 +19,9 @@ class GameState:
         self.display = display
         clock = pygame.time.Clock()
         sprites = pygame.sprite.OrderedUpdates()
+        bgm = pygame.mixer.Sound('./assets/sfx/bgm.ogg')
+        bgm.set_volume(0.25)
+        bgm.play(-1)
         bg = SCALE2X(pygame.image.load('./assets/sprites/STAGE/stage.png'), 3)
         bg = RESIZE(bg, (WIDTH, HEIGHT))
         self.display.blit(bg, (0, 0))
@@ -33,11 +37,14 @@ class GameState:
 
     def listen_for_exit(self):
         keys = pygame.key.get_pressed()
-        if pygame.QUIT in pygame.event.get() or keys[pygame.K_ESCAPE]: pygame.quit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
+                pygame.quit()
 
 
     def set_name(self, name):
-        self.name = name
+        menus.SOUND.play_event()
+        self.name = name.upper()
 
 
     def set_player(self, pcolor, difficulty):

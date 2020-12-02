@@ -1,4 +1,5 @@
 import pygame
+pygame.init()
 
 
 # Global variables for initial window settings
@@ -12,7 +13,6 @@ FULLSCREEN = False
 PX = lambda x: int(x * WIDTH)
 PY = lambda y: int(y * HEIGHT)
 FLIP = lambda img: pygame.transform.flip(img, True, False)
-
 
 def RESIZE(file, dim):
     if isinstance(file, str): return pygame.transform.smoothscale(pygame.image.load(file).convert_alpha(), dim)

@@ -6,7 +6,8 @@ class Sprite(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         img = pygame.image.load(file).convert_alpha()
         img = SCALE2X(img, upscale)
-        if resize: img = RESIZE(img, resize)
+        if resize:
+            img = RESIZE(img, resize)
         self.w = img.get_width() // frames
         self.h = img.get_height()
         self.spritesheet = []
@@ -26,8 +27,10 @@ class Sprite(pygame.sprite.Sprite):
             x -= self.w
 
     def move(self, xpos, ypos, center=True):
-        if center: self.rect.center = [xpos, ypos]
-        else: self.rect.topleft = [xpos, ypos]
+        if center:
+            self.rect.center = [xpos, ypos]
+        else:
+            self.rect.topleft = [xpos, ypos]
 
     def update_sprite(self, index, flip=False):
         self.image = FLIP(self.spritesheet[index]) if flip else self.spritesheet[index]

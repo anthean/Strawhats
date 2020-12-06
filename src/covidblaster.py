@@ -18,20 +18,19 @@ class CovidBlaster:
         self.menu = None
         self.current_menu = None
         self.high_scores = None
-        self.bgm = None
         self.pcolor = "./assets/sprites/CHARACTER_SPRITES/Red/"
         self.running_preview = False
         self.music = True
         self.back_sfx = False
+        self.paused = False
 
     # Runs the game
     def run(self):
         self.init_window()
         self.init_menus()
         self.get_high_scores()
-        self.bgm = pygame.mixer.Sound("./assets/sfx/menubgm.ogg")
-        self.bgm.set_volume(0.16)
-        self.bgm.play(-1)
+        pygame.mixer.music.load(MBGM)
+        pygame.mixer.music.play(-1)
         while True:
             self.current_menu.mainloop(self.display)
 
@@ -47,7 +46,6 @@ class CovidBlaster:
                 pygame.display.update()
                 self.state.sprites.clear(self.display, self.surface)
             else:
-                self.bgm.set_volume(0.10)
                 self.current_menu.draw(self.display)
                 self.current_menu.update(events)
                 pygame.display.update()
@@ -58,6 +56,7 @@ class CovidBlaster:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             self.toggle_pause()
+                
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -69,15 +68,15 @@ class CovidBlaster:
         self.state.set_player(self.pcolor)
         self.current_menu.disable()
         self.current_menu = self.menu.intro
-        self.bgm.stop()
-
-        if self.music:
-            self.bgm = pygame.mixer.Sound("./assets/sfx/bgm.ogg")
-            self.bgm.set_volume(0.06)
-            self.bgm.play(-1)
-
         self.display.blit(BG, (0, 0))
         self.surface = self.display.copy()
+        pygame.mixer.music.unload()
+        pygame.mixer.music.load(BGM)
+        pygame.mixer.music.set_volume(0.15)
+        pygame.mixer.music.play(-1)
+        if not self.music:
+            pygame.mixer.music.pause()
+
         self.current_menu.enable()
 
     # Initializes the window
@@ -87,7 +86,6 @@ class CovidBlaster:
             self.display = pygame.display.set_mode(
                 [WIDTH, HEIGHT], pygame.SCALED | pygame.FULLSCREEN
             )
-
         else:
             self.display = pygame.display.set_mode([WIDTH, HEIGHT], pygame.SCALED)
             pygame.display.set_caption("COVIDBLASTER")
@@ -135,9 +133,16 @@ class CovidBlaster:
         self.menu = Menu(main_menu, high_scores, settings, confirmation, intro, pause)
         self.current_menu = self.menu.main_menu
 
-
     # Sets the current menu to the main menu
     def set_main_menu(self):
+        if self.paused:
+            pygame.mixer.music.unload()
+            pygame.mixer.music.load(MBGM)
+            pygame.mixer.music.play(-1)
+            self.paused = False
+            if not self.music:
+                pygame.mixer.music.pause()
+
         self.running_preview = False
         menus.SOUND.play_close_menu()
         self.current_menu.disable()
@@ -188,15 +193,16 @@ class CovidBlaster:
 
     # Pause menu
     def toggle_pause(self):
+        menus.SOUND.play_event()
         if self.paused:
             print("unpaused")
+            pygame.mixer.music.set_volume(0.4)
             self.paused = False
             self.current_menu.disable()
             self.display.blit(BG, (0, 0))
-            if self.music:
-                self.bgm.set_volume(20)
         else:
             print("paused")
+            pygame.mixer.music.set_volume(0.1)
             self.paused = True
             self.current_menu = self.menu.pause
             self.current_menu.enable()
@@ -256,10 +262,10 @@ class CovidBlaster:
     def toggle_music(self, _, __):
         menus.SOUND.play_event()
         if self.music:
-            self.bgm.set_volume(0)
+            pygame.mixer.music.pause()
             self.music = False
         else:
-            self.bgm.set_volume(0.20)
+            pygame.mixer.music.unpause()
             self.music = True
 
     # Gets the high scores from the text file and stores it in a list

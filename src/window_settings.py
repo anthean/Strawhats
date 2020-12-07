@@ -10,8 +10,8 @@ FPS = 60
 WIDTH = 1280
 HEIGHT = 720
 FULLSCREEN = False
-BGM = "./assets/sfx/bgm.ogg"
-MBGM = "./assets/sfx/menubgm.ogg"
+BGM = "./assets/sfx/bgm.wav"
+MBGM = "./assets/sfx/menubgm.wav"
 
 
 # Utility Functions

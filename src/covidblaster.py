@@ -14,7 +14,6 @@ class CovidBlaster:
         self.state = GameState()
         self.fs = FULLSCREEN
         self.display = None
-        self.clock = None
         self.menu = None
         self.current_menu = None
         self.high_scores = None
@@ -35,28 +34,31 @@ class CovidBlaster:
             self.current_menu.mainloop(self.display)
 
     def play_game(self):
+        clock = pygame.time.Clock()
         while True:
             events = pygame.event.get()
-            for event in events:
-                self.handle_events(event)
-
-            if not self.current_menu.is_enabled() and not self.paused:
+            if (
+                clock.tick(FPS)
+                and not self.current_menu.is_enabled()
+                and not self.paused
+            ):
+                for event in pygame.event.get():
+                    self.handle_events(event)
+                    self.state.player.handle_events(event)
                 self.state.sprites = self.state.player.update(self.state.sprites)
                 self.state.sprites.draw(self.display)
                 pygame.display.update()
                 self.state.sprites.clear(self.display, self.surface)
             else:
-                self.current_menu.draw(self.display)
                 self.current_menu.update(events)
+                self.current_menu.draw(self.display)
                 pygame.display.update()
-
-            self.clock.tick(FPS) / 1000.0
 
     def handle_events(self, event):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             self.toggle_pause()
-                
+
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -72,7 +74,7 @@ class CovidBlaster:
         self.surface = self.display.copy()
         pygame.mixer.music.unload()
         pygame.mixer.music.load(BGM)
-        pygame.mixer.music.set_volume(0.15)
+        pygame.mixer.music.set_volume(0.4)
         pygame.mixer.music.play(-1)
         if not self.music:
             pygame.mixer.music.pause()
@@ -93,7 +95,7 @@ class CovidBlaster:
                 RESIZE("./assets/sprites/EXTRAS/icon.png", (64, 64))
             )
 
-            self.clock = pygame.time.Clock()
+            # self.clock = pygame.time.Clock()
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
     def init_menus(self):
@@ -216,13 +218,13 @@ class CovidBlaster:
         self.preview_color(path)
 
     def preview_color(self, path):
-        clock = pygame.time.Clock()
-        next_frame = pygame.time.get_ticks()
         frame = 0
         preview = Sprite(path + "idle.png", 5, upscale=2)
         sprites = pygame.sprite.OrderedUpdates()
         surface = self.display.copy()
         self.running_preview = True
+        clock = pygame.time.Clock()
+        next_frame = pygame.time.get_ticks()
         while self.running_preview:
             sprites.add(preview)
             events = pygame.event.get()

@@ -116,6 +116,7 @@ def create_intro_menu(choice):
     intro_menu.add_label("DERANGED CITIZENS INFECTED WITH COVID-19 HAVE GONE MAD AND")
     intro_menu.add_label("ARE NOT PRACTICING SAFE SOCIAL DISTANCING MEASURES.")
     intro_menu.add_label("TAKE THEM OUT AND SURVIVE AS LONG AS YOU CAN.")
+    intro_menu.add_label("")
     intro_menu.add_button("CONTINUE", choice)
     intro_menu.set_sound(SOUND)
     return intro_menu
@@ -124,6 +125,8 @@ def create_intro_menu(choice):
 def create_pause_menu(choice):
     pause_menu = pygame_menu.Menu(HEIGHT, WIDTH, "COVIDBLASTER", theme=game_theme())
     pause_menu.add_label("PAUSED")
+    for _ in range(2):
+        pause_menu.add_label("")
     pause_menu.add_button("CONTINUE", choice[0])
     pause_menu.add_button("QUIT", choice[1])
     pause_menu.set_sound(SOUND)

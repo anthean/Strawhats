@@ -1,4 +1,8 @@
 from window_settings import *
+from math import sqrt
+
+
+jforce = lambda mass, velocity: 0.5 * mass * (velocity ** 2)
 
 
 class Sprite(pygame.sprite.Sprite):

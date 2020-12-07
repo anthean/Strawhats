@@ -1,7 +1,8 @@
 from sprite import Sprite, jforce
 from window_settings import *
 
-INIT_VELOCTIY = 25
+
+INIT_VELOCTIY = 30
 
 
 class Player:
@@ -15,32 +16,41 @@ class Player:
             resize=(PX(0.085), PY(0.1)),
         )
         self.frame = {"idle": 0, "run": 0, "jump": 0, "crouch": 0, "death": 0}
-        self.current_frame = None
-        self.current_sprite = None
+        self.current_sprite = self.ps["idle"]
+        self.current_frame = 0
         self.x = PX(0.5)
         self.y = PY(0.82)
         self.speed = PX(0.0045)
-        self.mass = 0.10
+        self.mass = 0.05
         self.yspeed = INIT_VELOCTIY
         self.running = False
         self.flip = False
         self.crouching = False
         self.jumping = False
+        self.falling = False
+        self.plat_coll = False
         self.jump_sfx = pygame.mixer.Sound("assets/sfx/game/jump.wav")
+        self.clock = None
         self.next_frame = pygame.time.get_ticks()
+
+    def get_sprite(self):
+        return self.current_sprite
 
     def handle_events(self, event):
         self.event = event
         if (
             self.event.type == pygame.KEYDOWN
             and self.event.key == pygame.K_UP
-            and not self.jumping
+            and not self.jumping and not self.falling
         ):
             self.jumping = True
             self.jump_sfx.play()
 
-    def update(self, sprites):
+
+    def update(self, sprites, plat_coll):
         sprites.remove(self.current_sprite)
+        self.plat_coll = plat_coll
+        print(plat_coll)
         self.keys = pygame.key.get_pressed()
         if self.immune_system == 0:
             self.death()
@@ -56,14 +66,16 @@ class Player:
 
         if self.jumping:
             self.jump()
-
+        
+        if self.falling:
+            self.current_frame = self.frame['jump']
+            self.fall()
         self.current_sprite.update_sprite(self.current_frame, self.flip)
         self.current_sprite.move(self.x, self.y)
         shadow_adj = -PX(0.005) if self.flip else PX(0.005)
         y_shadow = self.y + PY(0.076) if not self.jumping else PY(1) - PY(0.086)
         self.shadow.move(self.x - shadow_adj, y_shadow)
         sprites.add(self.current_sprite, self.shadow)
-
         return sprites
 
     def idle(self):
@@ -90,7 +102,7 @@ class Player:
         if (
             self.event.type == pygame.KEYDOWN
             and self.event.key == pygame.K_UP
-            and not self.jumping
+            and not self.jumping and not self.falling
         ):
             self.jumping = True
             self.jump_sfx.play()
@@ -110,7 +122,7 @@ class Player:
         if (
             self.event.type == pygame.KEYDOWN
             and self.event.key == pygame.K_UP
-            and not self.jumping
+            and not self.jumping and not self.falling
         ):
             self.jumping = True
             self.jump_sfx.play()
@@ -122,16 +134,23 @@ class Player:
         self.current_frame = self.frame["jump"]
         if self.yspeed > 0:
             f = jforce(self.mass, self.yspeed)
+            self.y = self.y - f
+            self.yspeed = self.yspeed - 1
         else:
-            f = -jforce(self.mass, self.yspeed)
-        print(f)
+            self.jumping = False
+            self.falling = True
+
+
+    def fall(self):
+        f = -jforce(self.mass, self.yspeed)
         self.y = self.y - f
         self.yspeed = self.yspeed - 1
         if self.y > PY(0.82):
             self.jump_sfx.stop()
             self.y = PY(0.82)
-            self.jumping = False
+            self.falling = False
             self.yspeed = INIT_VELOCTIY
+        
 
     def crouch(self):
         self.current_sprite = self.ps["crouch"]

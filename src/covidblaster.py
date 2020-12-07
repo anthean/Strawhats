@@ -34,18 +34,21 @@ class CovidBlaster:
             self.current_menu.mainloop(self.display)
 
     def play_game(self):
-        clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
         while True:
             events = pygame.event.get()
             if (
-                clock.tick(FPS)
+                self.clock.tick(FPS)
                 and not self.current_menu.is_enabled()
                 and not self.paused
             ):
+                player = self.state.player.get_sprite()
                 for event in pygame.event.get():
                     self.handle_events(event)
                     self.state.player.handle_events(event)
-                self.state.sprites = self.state.player.update(self.state.sprites)
+                plat_coll = self.state.on_platform(player)
+                self.state.sprites = self.state.player.update(self.state.sprites, plat_coll)
+                self.state.platforms.draw(self.display)
                 self.state.sprites.draw(self.display)
                 pygame.display.update()
                 self.state.sprites.clear(self.display, self.surface)
@@ -68,6 +71,7 @@ class CovidBlaster:
         self.running_preview = False
         self.paused = True
         self.state.set_player(self.pcolor)
+        self.state.init_platforms()
         self.current_menu.disable()
         self.current_menu = self.menu.intro
         self.display.blit(BG, (0, 0))

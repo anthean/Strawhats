@@ -1,5 +1,4 @@
 # Default ignored files
 /.idea/
-/venv/
 /.vscode/
-/src/__pycache__/
+/src/venv/

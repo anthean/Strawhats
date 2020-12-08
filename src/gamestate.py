@@ -1,9 +1,11 @@
 import sys
 
 import menus
-from player import Player
-from sprite import Sprite
+from infected import Infected
 from platforms import Platform
+from player import Player
+from projectile import Projectile
+from sprite import Sprite
 from window_settings import *
 
 
@@ -14,7 +16,9 @@ class GameState:
         self.difficulty = 3
         self.score = 0
         self.game_over = False
-        self.sprites = pygame.sprite.OrderedUpdates()
+        self.psprites = pygame.sprite.OrderedUpdates()
+        self.projectile_sprites = pygame.sprite.OrderedUpdates()
+        # self.mobs = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
 
     def init_platforms(self):
@@ -33,6 +37,15 @@ class GameState:
             if coll:
                 return True
         return False
+
+    def set_mob(self, num):
+        idle = Sprite("./assets/sprites/MOBS/1/Idle.png", 4, upscale=2)
+        run = Sprite("./assets/sprites/MOBS/1/Run.png", 8, upscale=2)
+        jump = Sprite("./assets/sprites/MOBS/1/Jump.png", 2, upscale=2)
+        takehit = Sprite("./assets/sprites/MOBS/1/Take Hit.png", 4, upscale=2)
+        death = Sprite("./assets/sprites/MOBS/1/Death.png", 4, upscale=2)
+        ms = {"idle": idle, "run": run, "jump": jump, "crouch": takehit, "death": death}
+        self.mob = Infected(PX(), PY(), ms, 1)
 
     def set_name(self, name):
         menus.SOUND.play_event()

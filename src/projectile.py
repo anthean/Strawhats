@@ -1,4 +1,4 @@
-import pygame
+from window_settings import *
 
 
 class Projectile:

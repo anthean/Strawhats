@@ -1,12 +1,11 @@
 from sprite import Sprite, jforce
 from window_settings import *
 
-
 INIT_VELOCTIY = 30
 
 
 class Infected:
-    def __init__(self, ms, hp):
+    def __init__(self, x, y, ms, hp):
         self.ms = ms
         self.hp = hp
         self.frame = {"idle": 0, "run": 0, "jump": 0, "takehit": 0, "death": 0}
@@ -23,12 +22,10 @@ class Infected:
         self.jumping = False
         self.falling = False
         self.plat_coll = False
-        self.clock = None
         self.next_frame = pygame.time.get_ticks()
 
     def get_sprite(self):
         return self.current_sprite
-
 
     def update(self, sprites, plat_coll):
         sprites.remove(self.current_sprite)
@@ -41,9 +38,9 @@ class Infected:
 
         if self.jumping:
             self.jump()
-        
+
         if self.falling:
-            self.current_frame = self.frame['jump']
+            self.current_frame = self.frame["jump"]
             self.fall()
         self.current_sprite.update_sprite(self.current_frame, self.flip)
         self.current_sprite.move(self.x, self.y)
@@ -57,7 +54,6 @@ class Infected:
             self.frame["idle"] = (self.frame["idle"] + 1) % 4
             self.next_frame += FPS
         self.current_frame = self.frame["idle"]
-
 
     def run_right(self):
         self.flip = False

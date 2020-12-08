@@ -1,7 +1,6 @@
 from sprite import Sprite, jforce
 from window_settings import *
 
-
 INIT_VELOCTIY = 30
 
 
@@ -28,27 +27,24 @@ class Player:
         self.crouching = False
         self.jumping = False
         self.falling = False
-        self.plat_coll = False
         self.jump_sfx = pygame.mixer.Sound("assets/sfx/game/jump.wav")
-        self.clock = None
+        self.shoot_sfx = pygame.mixer.Sound("assets/sfx/game/shoot.wav")
         self.next_frame = pygame.time.get_ticks()
+        self.event = pygame.event.poll()
 
     def get_sprite(self):
         return self.current_sprite
 
     def handle_events(self, event):
         self.event = event
-        if (
-            self.event.type == pygame.KEYDOWN
-            and self.event.key == pygame.K_UP
-            and not self.jumping and not self.falling
-        ):
-            self.jumping = True
-            self.jump_sfx.play()
-
+        if self.event.type == pygame.KEYDOWN:
+            if self.event.key == pygame.K_UP and not self.is_airborne():
+                self.jumping = True
+                self.jump_sfx.play()
 
     def update(self, sprites):
         sprites.remove(self.current_sprite)
+        self.event = pygame.event.poll()
         self.keys = pygame.key.get_pressed()
         if self.immune_system == 0:
             self.death()
@@ -64,14 +60,15 @@ class Player:
 
         if self.jumping:
             self.jump()
-        
+
         if self.falling:
-            self.current_frame = self.frame['jump']
+            self.current_frame = self.frame["jump"]
             self.fall()
+
         self.current_sprite.update_sprite(self.current_frame, self.flip)
         self.current_sprite.move(self.x, self.y)
         shadow_adj = -PX(0.005) if self.flip else PX(0.005)
-        y_shadow = self.y + PY(0.076) if not self.jumping else PY(1) - PY(0.086)
+        y_shadow = self.y + PY(0.076) if not self.is_airborne() else PY(1) - PY(0.086)
         self.shadow.move(self.x - shadow_adj, y_shadow)
         sprites.add(self.current_sprite, self.shadow)
         return sprites
@@ -83,7 +80,6 @@ class Player:
             self.frame["idle"] = (self.frame["idle"] + 1) % 5
             self.next_frame += FPS
         self.current_frame = self.frame["idle"]
-
 
     def run_right(self):
         self.flip = False
@@ -97,13 +93,10 @@ class Player:
         if self.x >= PX(1):
             self.x = PX(0)
 
-        if (
-            self.event.type == pygame.KEYDOWN
-            and self.event.key == pygame.K_UP
-            and not self.jumping and not self.falling
-        ):
-            self.jumping = True
-            self.jump_sfx.play()
+        if self.event.type == pygame.KEYDOWN:
+            if self.event.key == pygame.K_UP and not self.is_airborne():
+                self.jumping = True
+                self.jump_sfx.play()
 
     def run_left(self):
         self.flip = True
@@ -117,13 +110,10 @@ class Player:
         if self.x <= PX(0):
             self.x = PX(1)
 
-        if (
-            self.event.type == pygame.KEYDOWN
-            and self.event.key == pygame.K_UP
-            and not self.jumping and not self.falling
-        ):
-            self.jumping = True
-            self.jump_sfx.play()
+        if self.event.type == pygame.KEYDOWN:
+            if self.event.key == pygame.K_UP and not self.is_airborne():
+                self.jumping = True
+                self.jump_sfx.play()
 
     def jump(self):
         self.current_sprite = self.ps["jump"]
@@ -138,7 +128,6 @@ class Player:
             self.jumping = False
             self.falling = True
 
-
     def fall(self):
         f = -jforce(self.mass, self.yspeed)
         self.y = self.y - f
@@ -148,7 +137,9 @@ class Player:
             self.y = PY(0.82)
             self.falling = False
             self.yspeed = INIT_VELOCTIY
-        
+
+    def is_airborne(self):
+        return self.jumping or self.falling
 
     def crouch(self):
         self.current_sprite = self.ps["crouch"]

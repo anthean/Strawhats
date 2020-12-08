@@ -46,10 +46,10 @@ class CovidBlaster:
                 for event in pygame.event.get():
                     self.handle_events(event)
                     self.state.player.handle_events(event)
-                self.state.sprites = self.state.player.update(self.state.sprites)
-                self.state.sprites.draw(self.display)
+                self.state.psprites = self.state.player.update(self.state.psprites)
+                self.state.psprites.draw(self.display)
                 pygame.display.update()
-                self.state.sprites.clear(self.display, self.surface)
+                self.state.psprites.clear(self.display, self.surface)
             else:
                 self.current_menu.update(events)
                 self.current_menu.draw(self.display)
@@ -96,8 +96,6 @@ class CovidBlaster:
             pygame.display.set_icon(
                 RESIZE("./assets/sprites/EXTRAS/icon.png", (64, 64))
             )
-
-            # self.clock = pygame.time.Clock()
 
     # Creation of pygame_menu menu objects with functions defined in menus.py
     def init_menus(self):
@@ -204,14 +202,13 @@ class CovidBlaster:
             self.paused = False
             self.current_menu.disable()
             self.display.blit(BG, (0, 0))
+            self.play_game()
         else:
             print("paused")
             pygame.mixer.music.set_volume(0.1)
             self.paused = True
             self.current_menu = self.menu.pause
             self.current_menu.enable()
-
-        self.play_game()
 
     # Used to set the player color in the play menu
     def set_player_color(self, _, path):

@@ -1,6 +1,6 @@
-from window_settings import *
 from math import sqrt
 
+from window_settings import *
 
 jforce = lambda mass, velocity: 0.5 * mass * (velocity ** 2)
 

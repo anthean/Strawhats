@@ -47,10 +47,8 @@ class Player:
             self.jump_sfx.play()
 
 
-    def update(self, sprites, plat_coll):
+    def update(self, sprites):
         sprites.remove(self.current_sprite)
-        self.plat_coll = plat_coll
-        print(plat_coll)
         self.keys = pygame.key.get_pressed()
         if self.immune_system == 0:
             self.death()

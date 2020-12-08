@@ -46,9 +46,7 @@ class CovidBlaster:
                 for event in pygame.event.get():
                     self.handle_events(event)
                     self.state.player.handle_events(event)
-                plat_coll = self.state.on_platform(player)
-                self.state.sprites = self.state.player.update(self.state.sprites, plat_coll)
-                self.state.platforms.draw(self.display)
+                self.state.sprites = self.state.player.update(self.state.sprites)
                 self.state.sprites.draw(self.display)
                 pygame.display.update()
                 self.state.sprites.clear(self.display, self.surface)

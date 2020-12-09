@@ -37,28 +37,38 @@ class CovidBlaster:
         self.clock = pygame.time.Clock()
         while True:
             events = pygame.event.get()
-            if (
-                self.clock.tick(FPS)
-                and not self.current_menu.is_enabled()
-                and not self.paused
-            ):
-                self.state.platforms.draw(self.display)
+            if (not self.current_menu.is_enabled() and not self.paused):
+                dt = self.clock.tick(FPS)
+                self.time = self.time + 0.01
+                if self.time > self.state.gametime:
+                    self.state.hpbonus += 15
+                    self.state.speedbonus += PX(0.0002)
+                    self.state.scorebonus += 0.5
+                    self.state.add_mob()
+                    self.state.gametime += 20
+
+                if self.state.mobs.getcount() < 3:
+                    self.state.add_mob()
+
                 for event in pygame.event.get():
                     self.handle_events(event)
                     self.state.player.handle_events(event)
-                self.state.psprites = self.state.player.update(
-                    self.state.psprites, self.state
-                )
+
+                self.state.psprites = self.state.player.update(self.state.psprites, self.state)
                 shot_fired = self.state.player.shoot()
+                playersprite = self.state.player.get_sprite()
+                pplat = self.state.player.get_plat()
                 self.state.projectile_sprites = self.state.projectile.update(
                     self.state.projectile_sprites, shot_fired
                 )
-                # self.state.mob_sprites = self.state.mobs.update()
+                self.state.mob_sprites = self.state.mobs.update(self.state.mob_sprites, self.state, playersprite, pplat)
                 self.state.psprites.draw(self.display)
                 self.state.projectile_sprites.draw(self.display)
+                self.state.mob_sprites.draw(self.display)
                 pygame.display.update()
                 self.state.psprites.clear(self.display, self.surface)
                 self.state.projectile_sprites.clear(self.display, self.surface)
+                self.state.mob_sprites.clear(self.display, self.surface)
             else:
                 self.current_menu.update(events)
                 self.current_menu.draw(self.display)
@@ -78,7 +88,8 @@ class CovidBlaster:
         self.running_preview = False
         self.paused = True
         self.state.set_player(self.pcolor)
-        # self.state.init_mobs()
+        self.state.init_mobs()
+        self.state.add_mob()
         self.state.init_platforms()
         self.current_menu.disable()
         self.current_menu = self.menu.intro
@@ -90,11 +101,13 @@ class CovidBlaster:
         if not self.music:
             pygame.mixer.music.pause()
 
+        pygame.init()
+        self.time = pygame.time.get_ticks()/1000.0
         self.current_menu.enable()
+
 
     # Initializes the window
     def init_window(self):
-        pygame.init()
         if FULLSCREEN:
             self.display = pygame.display.set_mode(
                 [WIDTH, HEIGHT], pygame.SCALED | pygame.FULLSCREEN
@@ -150,6 +163,7 @@ class CovidBlaster:
             pygame.mixer.music.unload()
             pygame.mixer.music.load(MBGM)
             pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(1)
             self.paused = False
             if not self.music:
                 pygame.mixer.music.pause()
@@ -214,7 +228,7 @@ class CovidBlaster:
             self.play_game()
         else:
             print("paused")
-            pygame.mixer.music.set_volume(0.1)
+            pygame.mixer.music.set_volume(0.5)
             self.paused = True
             self.current_menu = self.menu.pause
             self.current_menu.enable()

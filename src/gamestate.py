@@ -10,6 +10,9 @@ from projectile import Projectile
 from sprite import Sprite
 from window_settings import *
 
+SPAWNDICT = {'lfloor': ((-PX(0.75)), (PY(0.82))), 'rfloor': ((PX(1.25)), (PY(0.82))), 'left': ((-PX(0.75)), (PY(0.222))), 'right': ((PX(1.25)), (PY(0.222)))}
+
+
 
 class GameState:
     def __init__(self):
@@ -22,6 +25,10 @@ class GameState:
         self.projectile_sprites = pygame.sprite.OrderedUpdates()
         self.mob_sprites = pygame.sprite.OrderedUpdates()
         self.platforms = pygame.sprite.Group()
+        self.gametime = 15
+        self.hpbonus = 0
+        self.speedbonus = 0
+        self.scorebonus = 0
 
     def init_platforms(self):
         temp = []
@@ -43,16 +50,36 @@ class GameState:
                     return "right"
         return False
 
+    def landed_shot(self, mob):
+        for projectile in self.projectile_sprites:
+            coll = pygame.sprite.collide_rect(projectile, mob)
+            if coll:
+                return True
+
+        return False
+
+
+    def took_damage(self, player):
+        for mob in self.mob_sprites:
+            coll = pygame.sprite.collide_rect(player, mob)
+            if coll:
+                return True
+
+        return False
+
     def add_mob(self):
-        num = str(random.randint(1, 5))
+        num = str(random.randint(1, 4))
+        loc = random.choice(['lfloor', 'rfloor', 'left', 'right'])
+        hp = random.randint(10, 40) + self.hpbonus
+        points = random.randint(100, 200)
         idle = Sprite("./assets/sprites/MOBS/" + num + "/Idle.png", 4, upscale=2)
         run = Sprite("./assets/sprites/MOBS/" + num + "/Run.png", 8, upscale=2)
         jump = Sprite("./assets/sprites/MOBS/" + num + "/Jump.png", 2, upscale=2)
         takehit = Sprite("./assets/sprites/MOBS/" + num + "/Take Hit.png", 4, upscale=2)
         death = Sprite("./assets/sprites/MOBS/" + num + "/Death.png", 4, upscale=2)
-        ms = {"idle": idle, "run": run, "jump": jump, "crouch": takehit, "death": death}
-        mob = Infected(PX(0.5), PY(0.5), ms, 1)
-        self.mobs.update(mob)
+        ms = {"idle": idle, "run": run, "jump": jump, "takehit": takehit, "death": death}
+        mob = Infected(*SPAWNDICT[loc], ms, hp, self.speedbonus, points)
+        self.mobs.addmob(mob)
 
     def set_name(self, name):
         menus.SOUND.play_event()

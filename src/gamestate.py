@@ -68,7 +68,7 @@ class GameState:
         return False
 
     def add_mob(self):
-        num = str(random.randint(1, 4))
+        num = str(random.randint(1, 5))
         loc = random.choice(['lfloor', 'rfloor', 'left', 'right'])
         hp = random.randint(10, 40) + self.hpbonus
         points = random.randint(100, 200)

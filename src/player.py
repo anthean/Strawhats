@@ -8,8 +8,12 @@ class Player:
     def __init__(self, ps, difficulty):
         self.ps = ps
         self.immune_system = difficulty
-        self.shadow = Sprite("./assets/sprites/EXTRAS/shadow.png", 1, upscale=2, resize=(PX(0.085), PY(0.1)))
-        self.muzzleflash = Sprite("./assets/sprites/EXTRAS/MuzzleFlash.png", 1, upscale=2)
+        self.shadow = Sprite(
+            "./assets/sprites/EXTRAS/shadow.png",
+            1,
+            upscale=2,
+            resize=(PX(0.085), PY(0.1)),
+        )
         self.frame = {"idle": 0, "run": 0, "jump": 0, "crouch": 0, "death": 0}
         self.current_sprite = self.ps["idle"]
         self.current_frame = 0
@@ -27,7 +31,6 @@ class Player:
         self.shooting = False
         self.shot_timer = 0
         self.jump_sfx = pygame.mixer.Sound("assets/sfx/game/jump.wav")
-        self.shoot_sfx = pygame.mixer.Sound("assets/sfx/game/shoot.wav")
         self.next_frame = pygame.time.get_ticks()
         self.event = pygame.event.poll()
 
@@ -66,9 +69,6 @@ class Player:
             self.current_frame = self.frame["jump"]
             self.fall()
 
-        if self.shooting:
-            self.shoot(sprites)
-
         self.update_shadow(sprites)
         self.current_sprite.update_sprite(self.current_frame, self.flip)
         self.current_sprite.move(self.x, self.y)
@@ -103,12 +103,6 @@ class Player:
         if self.x >= PX(1):
             self.x = PX(0)
 
-        if self.event.type == pygame.KEYDOWN:
-            if self.event.key == pygame.K_UP and not self.is_airborne():
-                self.jumping = True
-                self.jump_sfx.play()
-            if self.event.key == pygame.K_SPACE and not self.shooting:
-                self.shooting = True
 
     def run_left(self):
         self.is_idle = False
@@ -123,35 +117,27 @@ class Player:
         if self.x <= PX(0):
             self.x = PX(1)
 
-        if self.event.type == pygame.KEYDOWN:
-            if self.event.key == pygame.K_UP and not self.is_airborne():
-                self.jumping = True
-                self.jump_sfx.play()
-            if self.event.key == pygame.K_SPACE and not self.shooting:
-                self.shooting = True
 
-    def shoot(self, sprites):
-        xflash = -PX(0.06) if self.flip else PX(0.06)
-        if self.crouching:
-           yflash =  PY(0.00001)
-        elif self.is_idle:
-           yflash =  PY(0.01)
-        else:
-            yflash = PY(0.025)
-        self.muzzleflash.update_sprite(0, self.flip)
-        self.muzzleflash.move(self.x+xflash, self.y-yflash)
-        if self.shot_timer == 0:
-            self.shot_timer = 12
-            self.shooting = True
-            sprites.add(self.muzzleflash)
-            self.shoot_sfx.play()
-            return self.muzzleflash
-        else:
-            self.shot_timer = self.shot_timer - 1
-            if self.shot_timer <= 0:
-                sprites.remove(self.muzzleflash)
-                self.shooting = False
-            return False
+    def shoot(self):
+        if self.shooting:
+            xflash = -PX(0.06) if self.flip else PX(0.06)
+            if self.crouching:
+                yflash = -PY(0.01)
+            elif self.is_idle:
+                yflash = PY(0.01)
+            else:
+                yflash = PY(0.025)
+            if self.shot_timer == 0:
+                update_params = (0, self.flip)
+                move_params = (self.x + xflash, self.y - yflash)
+                self.shot_timer = 12
+                return (update_params, move_params)
+            else:
+                self.shot_timer = self.shot_timer - 1
+                if self.shot_timer <= 0:
+                    self.shooting = False
+
+        return False
 
     def jump(self):
         self.is_idle = False

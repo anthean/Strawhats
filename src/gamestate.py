@@ -18,7 +18,6 @@ class GameState:
         self.game_over = False
         self.psprites = pygame.sprite.OrderedUpdates()
         self.projectile_sprites = pygame.sprite.OrderedUpdates()
-        # self.mobs = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
 
     def init_platforms(self):
@@ -62,6 +61,7 @@ class GameState:
         death = Sprite(pcolor + "death.png", 8, upscale=2)
         ps = {"idle": idle, "run": run, "jump": jump, "crouch": crouch, "death": death}
         self.player = Player(ps, self.difficulty)
+        self.projectile = Projectile()
 
     def set_score(self, score):
         self.score = score

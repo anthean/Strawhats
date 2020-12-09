@@ -30,7 +30,6 @@ class Infected:
     def update(self, sprites, plat_coll):
         sprites.remove(self.current_sprite)
         self.plat_coll = plat_coll
-        self.keys = pygame.key.get_pressed()
         if self.hp == 0:
             self.death()
         else:

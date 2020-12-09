@@ -44,7 +44,6 @@ class Player:
                 self.jumping = True
                 self.jump_sfx.play()
             if self.event.key == pygame.K_SPACE and not self.shooting:
-                print('space is pressed')
                 self.shooting = True
 
     def update(self, sprites):
@@ -69,7 +68,6 @@ class Player:
         if self.falling:
             self.current_frame = self.frame["jump"]
             self.fall()
-
 
         self.update_shadow(sprites)
         self.current_sprite.update_sprite(self.current_frame, self.flip)
@@ -105,12 +103,6 @@ class Player:
         if self.x >= PX(1):
             self.x = PX(0)
 
-        if self.event.type == pygame.KEYDOWN:
-            if self.event.key == pygame.K_UP and not self.is_airborne():
-                self.jumping = True
-                self.jump_sfx.play()
-            if self.event.key == pygame.K_SPACE and not self.shooting:
-                self.shooting = True
 
     def run_left(self):
         self.is_idle = False
@@ -125,18 +117,12 @@ class Player:
         if self.x <= PX(0):
             self.x = PX(1)
 
-        if self.event.type == pygame.KEYDOWN:
-            if self.event.key == pygame.K_UP and not self.is_airborne():
-                self.jumping = True
-                self.jump_sfx.play()
-            if self.event.key == pygame.K_SPACE and not self.shooting:
-                self.shooting = True
 
     def shoot(self):
         if self.shooting:
             xflash = -PX(0.06) if self.flip else PX(0.06)
             if self.crouching:
-                yflash = PY(0.00001)
+                yflash = -PY(0.01)
             elif self.is_idle:
                 yflash = PY(0.01)
             else:

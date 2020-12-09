@@ -10,7 +10,7 @@ class Projectile:
         self.bsprite = Sprite("./assets/sprites/EXTRAS/BulletStream.png", 1, upscale=2)
         self.shoot_sfx = pygame.mixer.Sound("assets/sfx/game/shoot.wav")
         self.bullet_list = []
-        self.speed = PX(0.005)
+        self.speed = PX(0.004)
 
     def update(self, sprites, shot_fired):
         sprites.remove(self.muzzleflash)

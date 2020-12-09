@@ -48,7 +48,9 @@ class CovidBlaster:
                     self.state.player.handle_events(event)
                 self.state.psprites = self.state.player.update(self.state.psprites)
                 shot_fired = self.state.player.shoot()
-                self.state.projectile_sprites = self.state.projectile.update(self.state.projectile_sprites, shot_fired)
+                self.state.projectile_sprites = self.state.projectile.update(
+                    self.state.projectile_sprites, shot_fired
+                )
                 self.state.psprites.draw(self.display)
                 self.state.projectile_sprites.draw(self.display)
                 pygame.display.update()

@@ -32,7 +32,7 @@ class Sprite(pygame.sprite.Sprite):
 
     def move(self, xpos, ypos=False, center=True):
         if not ypos:
-            xpos = self.rect.center[0] + xpos
+            xpos += self.rect.center[0]
             ypos = self.rect.center[1]
         if center:
             self.rect.center = [xpos, ypos]

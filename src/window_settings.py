@@ -9,7 +9,7 @@ pygame.init()
 FPS = 60
 WIDTH = 1280
 HEIGHT = 720
-FULLSCREEN = False
+FULLSCREEN = True
 BGM = "./assets/sfx/bgm.ogg"
 MBGM = "./assets/sfx/menubgm.ogg"
 GAMEOVER = "./assets/sfx/game/gameover.wav"

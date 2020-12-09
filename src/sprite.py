@@ -30,7 +30,10 @@ class Sprite(pygame.sprite.Sprite):
             self.spritesheet.append(frame.copy())
             x -= self.w
 
-    def move(self, xpos, ypos, center=True):
+    def move(self, xpos, ypos=False, center=True):
+        if not ypos:
+            xpos = self.rect.center[0] + xpos
+            ypos = self.rect.center[1]
         if center:
             self.rect.center = [xpos, ypos]
         else:
@@ -42,3 +45,4 @@ class Sprite(pygame.sprite.Sprite):
         self.w = self.rect.width
         self.h = self.rect.height
         self.mask = pygame.mask.from_surface(self.image)
+        self.flip = flip

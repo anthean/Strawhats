@@ -47,9 +47,13 @@ class CovidBlaster:
                     self.handle_events(event)
                     self.state.player.handle_events(event)
                 self.state.psprites = self.state.player.update(self.state.psprites)
+                shot_fired = self.state.player.shoot()
+                self.state.projectile_sprites = self.state.projectile.update(self.state.projectile_sprites, shot_fired)
                 self.state.psprites.draw(self.display)
+                self.state.projectile_sprites.draw(self.display)
                 pygame.display.update()
                 self.state.psprites.clear(self.display, self.surface)
+                self.state.projectile_sprites.clear(self.display, self.surface)
             else:
                 self.current_menu.update(events)
                 self.current_menu.draw(self.display)

@@ -10,8 +10,9 @@ FPS = 60
 WIDTH = 1280
 HEIGHT = 720
 FULLSCREEN = False
-BGM = "./assets/sfx/bgm.wav"
-MBGM = "./assets/sfx/menubgm.wav"
+BGM = "./assets/sfx/bgm.ogg"
+MBGM = "./assets/sfx/menubgm.ogg"
+GAMEOVER = "./assets/sfx/game/gameover.wav"
 
 
 # Utility Functions
@@ -41,3 +42,8 @@ def SCALE2X(img, x):
 BG = RESIZE(
     SCALE2X(pygame.image.load("./assets/sprites/STAGE/stage.png"), 3), (WIDTH, HEIGHT)
 )
+
+H = PY(0.01)
+MID = (PX(0.49), PY(0.43), PX(0.02), H)
+LEFT = (PX(0.28), PY(0.17), PX(0.02), H)
+RIGHT = (PX(0.7), PY(0.17), PX(0.02), H)

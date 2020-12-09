@@ -22,6 +22,7 @@ class Infected:
         self.jumping = False
         self.falling = False
         self.plat_coll = False
+        self.dead = False
         self.next_frame = pygame.time.get_ticks()
 
     def get_sprite(self):
@@ -107,8 +108,8 @@ class Infected:
             self.frame["takehit"] = (self.frame["takehit"] + 1) % 4
             self.next_frame += FPS
         self.current_frame = self.frame["takehit"]
-        if self.frame["takehit"] == 2:
-            self.crouching = True
+        if self.current_frame == 3:
+            self.hp -= 1
 
     def death(self):
         self.current_sprite = self.ms["death"]
@@ -116,3 +117,8 @@ class Infected:
             self.frame["death"] = (self.frame["death"] + 1) % 4
             self.next_frame += FPS
         self.current_frame = self.frame["death"]
+        if self.current_frame == 3:
+            self.dead = True
+
+    def isdead(self):
+        return self.dead

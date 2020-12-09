@@ -39,9 +39,7 @@ class CovidBlaster:
             events = pygame.event.get()
             if (not self.current_menu.is_enabled() and not self.paused):
                 dt = self.clock.tick(FPS)
-                print(len(self.state.mob_sprites))
                 self.time = self.time + 0.01
-
                 if self.time > self.state.gametime:
                     self.state.hpbonus += 15
                     self.state.speedbonus += PX(0.0002)

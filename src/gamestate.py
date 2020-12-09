@@ -1,7 +1,9 @@
+import random
 import sys
 
 import menus
 from infected import Infected
+from mobs import Mobs
 from platforms import Platform
 from player import Player
 from projectile import Projectile
@@ -18,15 +20,14 @@ class GameState:
         self.game_over = False
         self.psprites = pygame.sprite.OrderedUpdates()
         self.projectile_sprites = pygame.sprite.OrderedUpdates()
+        self.mob_sprites = pygame.sprite.OrderedUpdates()
         self.platforms = pygame.sprite.Group()
 
     def init_platforms(self):
         temp = []
-        h = PY(0.08)
-        temp.append(Platform(0, PY(0.85), WIDTH, h))
-        temp.append(Platform(PX(0.425), PY(0.45), PX(0.15), h))
-        temp.append(Platform(0, PY(0.2), PX(0.33), h))
-        temp.append(Platform(PX(0.67), PY(0.2), PX(0.33), h))
+        temp.append(Platform(*MID))
+        temp.append(Platform(*LEFT))
+        temp.append(Platform(*RIGHT))
         for i in range(0, len(temp)):
             self.platforms.add(temp[i])
 
@@ -34,17 +35,24 @@ class GameState:
         for platform in self.platforms:
             coll = pygame.sprite.collide_rect(platform, player)
             if coll:
-                return True
+                if platform.coord == MID:
+                    return "mid"
+                elif platform.coord == LEFT:
+                    return "left"
+                elif platform.coord == RIGHT:
+                    return "right"
         return False
 
-    def set_mob(self, num):
-        idle = Sprite("./assets/sprites/MOBS/1/Idle.png", 4, upscale=2)
-        run = Sprite("./assets/sprites/MOBS/1/Run.png", 8, upscale=2)
-        jump = Sprite("./assets/sprites/MOBS/1/Jump.png", 2, upscale=2)
-        takehit = Sprite("./assets/sprites/MOBS/1/Take Hit.png", 4, upscale=2)
-        death = Sprite("./assets/sprites/MOBS/1/Death.png", 4, upscale=2)
+    def add_mob(self):
+        num = str(random.randint(1, 5))
+        idle = Sprite("./assets/sprites/MOBS/" + num + "/Idle.png", 4, upscale=2)
+        run = Sprite("./assets/sprites/MOBS/" + num + "/Run.png", 8, upscale=2)
+        jump = Sprite("./assets/sprites/MOBS/" + num + "/Jump.png", 2, upscale=2)
+        takehit = Sprite("./assets/sprites/MOBS/" + num + "/Take Hit.png", 4, upscale=2)
+        death = Sprite("./assets/sprites/MOBS/" + num + "/Death.png", 4, upscale=2)
         ms = {"idle": idle, "run": run, "jump": jump, "crouch": takehit, "death": death}
-        self.mob = Infected(PX(), PY(), ms, 1)
+        mob = Infected(PX(0.5), PY(0.5), ms, 1)
+        self.mobs.update(mob)
 
     def set_name(self, name):
         menus.SOUND.play_event()
@@ -62,6 +70,9 @@ class GameState:
         ps = {"idle": idle, "run": run, "jump": jump, "crouch": crouch, "death": death}
         self.player = Player(ps, self.difficulty)
         self.projectile = Projectile()
+
+    def init_mobs(self):
+        self.mobs = Mobs()
 
     def set_score(self, score):
         self.score = score

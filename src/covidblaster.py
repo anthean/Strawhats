@@ -42,15 +42,18 @@ class CovidBlaster:
                 and not self.current_menu.is_enabled()
                 and not self.paused
             ):
-                player = self.state.player.get_sprite()
+                self.state.platforms.draw(self.display)
                 for event in pygame.event.get():
                     self.handle_events(event)
                     self.state.player.handle_events(event)
-                self.state.psprites = self.state.player.update(self.state.psprites)
+                self.state.psprites = self.state.player.update(
+                    self.state.psprites, self.state
+                )
                 shot_fired = self.state.player.shoot()
                 self.state.projectile_sprites = self.state.projectile.update(
                     self.state.projectile_sprites, shot_fired
                 )
+                # self.state.mob_sprites = self.state.mobs.update()
                 self.state.psprites.draw(self.display)
                 self.state.projectile_sprites.draw(self.display)
                 pygame.display.update()
@@ -75,6 +78,7 @@ class CovidBlaster:
         self.running_preview = False
         self.paused = True
         self.state.set_player(self.pcolor)
+        # self.state.init_mobs()
         self.state.init_platforms()
         self.current_menu.disable()
         self.current_menu = self.menu.intro
@@ -82,7 +86,6 @@ class CovidBlaster:
         self.surface = self.display.copy()
         pygame.mixer.music.unload()
         pygame.mixer.music.load(BGM)
-        pygame.mixer.music.set_volume(0.4)
         pygame.mixer.music.play(-1)
         if not self.music:
             pygame.mixer.music.pause()
@@ -204,10 +207,10 @@ class CovidBlaster:
         menus.SOUND.play_event()
         if self.paused:
             print("unpaused")
-            pygame.mixer.music.set_volume(0.4)
             self.paused = False
             self.current_menu.disable()
             self.display.blit(BG, (0, 0))
+            pygame.mixer.music.set_volume(1)
             self.play_game()
         else:
             print("paused")

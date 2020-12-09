@@ -1,7 +1,6 @@
 from sprite import Sprite, jforce
 from window_settings import *
 
-INIT_VELOCTIY = 30
 
 
 class Player:
@@ -22,57 +21,82 @@ class Player:
         self.y = PY(0.82)
         self.speed = PX(0.0045)
         self.xspeed = PX(0.0017)
-        self.yspeed = INIT_VELOCTIY
+        self.yspeed = 30
         self.mass = 0.05
         self.current_plat = "floor"
-        self.running = False
         self.flip = False
         self.crouching = False
         self.jumping = False
         self.falling = False
         self.falling_from_platform = False
         self.shooting = False
-        self.dead = False
         self.shot_timer = 0
+        self.dead = False
         self.jump_sfx = pygame.mixer.Sound("assets/sfx/game/jump.wav")
+        self.take_hit_sfx = pygame.mixer.Sound("assets/sfx/game/impact.wav")
+        self.taking_hit = False
+        self.immunity_counter = 0
+        self.dying = False
         self.next_frame = pygame.time.get_ticks()
         self.event = pygame.event.poll()
 
     def get_sprite(self):
         return self.current_sprite
 
+    def get_plat(self):
+        return self.current_plat
+
     def handle_events(self, event):
-        self.event = event
-        if self.event.type == pygame.KEYDOWN:
-            if self.event.key == pygame.K_UP and not self.is_airborne():
-                self.jumping = True
-                self.jump_sfx.play()
-            if self.event.key == pygame.K_SPACE and not self.shooting:
-                self.shooting = True
+        if self.immune_system != 0:
+            self.event = event
+            if self.event.type == pygame.KEYDOWN:
+                if self.event.key == pygame.K_UP and not self.is_airborne():
+                    self.jumping = True
+                    self.jump_sfx.play()
+                if self.event.key == pygame.K_SPACE and not self.shooting:
+                    self.shooting = True
 
     def update(self, sprites, state):
         sprites.remove(self.current_sprite)
-        self.event = pygame.event.poll()
-        self.keys = pygame.key.get_pressed()
-        if self.immune_system == 0:
-            self.death()
-        elif self.keys[pygame.K_DOWN]:
-            if not self.crouching:
-                self.crouch()
-        elif self.keys[pygame.K_RIGHT] and not self.falling_from_platform:
-            self.run_right()
-        elif self.keys[pygame.K_LEFT] and not self.falling_from_platform:
-            self.run_left()
-        else:
-            self.idle()
 
-        if self.jumping:
-            self.jump()
+        # taken_hit = state.took_damage(self.current_sprite)
 
-        if self.falling:
-            self.current_frame = self.frame["jump"]
-            self.fall(state)
+        # if self.immune_system == 0:
+        #     self.dying = True
 
+        if not self.dying:
+            self.event = pygame.event.poll()
+            self.keys = pygame.key.get_pressed()
+
+            if self.keys[pygame.K_DOWN]:
+                if not self.crouching:
+                    self.crouch()
+            elif self.keys[pygame.K_RIGHT] and not self.falling_from_platform:
+                self.run_right()
+            elif self.keys[pygame.K_LEFT] and not self.falling_from_platform:
+                self.run_left()
+            else:
+                self.idle()
+
+            if self.jumping:
+                self.jump()
+
+            if self.falling:
+                self.current_frame = self.frame["jump"]
+                self.fall(state)
+                
+        #     if taken_hit and not self.taking_hit:
+        #         self.taking_hit = True
+        #         self.immunity_counter = 50
+        #         self.take_hit_sfx.play()
+        #         self.take_hit()
+        #     elif self.taking_hit:
+        #         self.immunity_counter -= 1
+        #         self.take_hit()
+
+
+        # if self.dying:
+        #     self.death()      
         self.update_shadow(sprites)
         self.current_sprite.update_sprite(self.current_frame, self.flip)
         self.current_sprite.move(self.x, self.y)
@@ -85,10 +109,11 @@ class Player:
         self.shadow.move(self.x - xshadow, yshadow)
         sprites.add(self.shadow)
 
+
+
     def idle(self):
         self.is_idle = True
         self.crouching = False
-        self.running = False
         self.current_sprite = self.ps["idle"]
         if pygame.time.get_ticks() > self.next_frame:
             self.frame["idle"] = (self.frame["idle"] + 1) % 5
@@ -98,7 +123,6 @@ class Player:
     def run_right(self):
         self.is_idle = False
         self.flip = False
-        self.running = True
         if not self.jumping:
             self.current_sprite = self.ps["run"]
             if pygame.time.get_ticks() > self.next_frame:
@@ -124,7 +148,6 @@ class Player:
     def run_left(self):
         self.is_idle = False
         self.flip = True
-        self.running = True
         if not self.jumping:
             self.current_sprite = self.ps["run"]
             if pygame.time.get_ticks() > self.next_frame:
@@ -170,7 +193,6 @@ class Player:
 
     def jump(self):
         self.is_idle = False
-        self.running = False
         self.current_sprite = self.ps["jump"]
         if pygame.time.get_ticks() > self.next_frame:
             self.frame["jump"] = 1
@@ -198,21 +220,21 @@ class Player:
             self.y = PY(0.222)
             self.falling = False
             self.falling_from_platform = False
-            self.yspeed = INIT_VELOCTIY
+            self.yspeed = 30
             self.current_plat = state.on_platform(self.current_sprite)
         elif state.on_platform(self.current_sprite) == "mid" and self.y > PY(0.472):
             self.jump_sfx.stop()
             self.y = PY(0.472)
             self.falling = False
             self.falling_from_platform = False
-            self.yspeed = INIT_VELOCTIY
+            self.yspeed = 30
             self.current_plat = "mid"
         elif self.y > PY(0.82):
             self.jump_sfx.stop()
             self.y = PY(0.82)
             self.falling = False
             self.falling_from_platform = False
-            self.yspeed = INIT_VELOCTIY
+            self.yspeed = 30
             self.current_plat = "floor"
 
     def is_airborne(self):
@@ -228,13 +250,19 @@ class Player:
         if self.frame["crouch"] == 2:
             self.crouching = True
 
+    def take_hit(self):
+        if self.immunity_counter == 0:
+            self.immune_system -= 1
+            self.taking_hit = False
+
+
     def death(self):
-        pygame.mixer.load(GAMEOVER)
-        pygame.mixer.play()
+        pygame.mixer.music.load(GAMEOVER)
+        pygame.mixer.music.play()
         self.current_sprite = self.ps["death"]
         if pygame.time.get_ticks() > self.next_frame:
             self.frame["death"] = (self.frame["death"] + 1) % 8
-            self.next_frame += FPS
+            self.next_frame += 200
         self.current_frame = self.frame["death"]
         if self.current_frame == 7:
             self.dead = True

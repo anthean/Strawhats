@@ -2,11 +2,11 @@
 
 
 ## Game Description
-Deranged citizens infected with Covid-19 have gona mad and are not practicing safe social distancing measures. Take them out and survive as long as you can.
+Deranged citizens infected with Covid-19 have gone mad and are not practicing safe social distancing measures. Take them out and survive as long as you can.
 
 #
 
-## Conrols:
+## Controls:
 - up, down, left, right - menu navigation
 - enter - menu confirm
 - left, right - move player left/right
